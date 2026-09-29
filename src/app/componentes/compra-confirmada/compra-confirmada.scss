@@ -80,4 +80,25 @@
   .entrada {
     grid-template-columns: 1fr;
   }
+  .qr {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.qr qrcode {
+  display: block;
+  padding: 1rem;
+  background: white;
+  border-radius: 12px;
+}
+
+.qr small {
+  max-width: 220px;
+  overflow-wrap: anywhere;
+  text-align: center;
+  color: #666;
+  font-size: 0.7rem;
+}
 }
