@@ -1,0 +1,180 @@
+.seleccion-asientos {
+  max-width: 1050px;
+  margin: 0 auto;
+  padding: 1.5rem;
+}
+
+.encabezado {
+  margin-bottom: 1.5rem;
+}
+
+.encabezado a {
+  text-decoration: none;
+}
+
+.encabezado h1 {
+  margin-bottom: 0.5rem;
+}
+
+.pantalla {
+  width: 60%;
+  margin: 0 auto 2rem;
+  padding: 0.5rem;
+  text-align: center;
+  border-radius: 0 0 50% 50%;
+  background: #ddd;
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
+}
+
+.mapa-asientos {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  width: max-content;
+  margin: 0 auto;
+}
+
+.fila {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.letra {
+  width: 18px;
+  font-size: 0.75rem;
+  font-weight: bold;
+  text-align: center;
+}
+
+.asientos {
+  display: grid;
+  grid-template-columns:
+    repeat(4, 28px)
+    18px
+    repeat(20, 28px)
+    18px
+    repeat(4, 28px);
+  gap: 3px;
+}
+
+.asiento {
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: 0;
+  border-radius: 5px;
+  cursor: pointer;
+  background: #ddd;
+  font-size: 0.65rem;
+  transition: transform 0.15s ease;
+}
+
+.asiento:hover:not(:disabled) {
+  transform: scale(1.08);
+}
+
+.asiento.accesible {
+  background: #b8d9ff;
+}
+
+.asiento.vip {
+  background: #e6c66a;
+}
+
+.asiento.ocupado {
+  background: #999;
+  color: white;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.asiento.seleccionado {
+  background: #111;
+  color: white;
+}
+
+.leyenda {
+  display: flex;
+  justify-content: center;
+  gap: 1.2rem;
+  margin: 1.5rem 0;
+  font-size: 0.8rem;
+}
+
+.resumen {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.8rem 1rem;
+  border-radius: 10px;
+  background: #f2f2f2;
+}
+
+.boton-continuar {
+  display: block;
+  margin: 1rem 0 0 auto;
+  padding: 0.7rem 1.2rem;
+  border: 0;
+  border-radius: 8px;
+  background: #111;
+  color: white;
+  cursor: pointer;
+}
+
+.error {
+  color: #b00020;
+}
+.resumen-compra {
+  margin-top: 2rem;
+  padding: 1.5rem;
+  border-radius: 12px;
+  background: #f5f5f5;
+}
+
+.lista-seleccionados {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.asiento-resumen {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.7rem;
+  border-radius: 8px;
+  background: white;
+}
+
+.asiento-resumen small {
+  margin-left: 0.5rem;
+  color: #666;
+}
+
+.total-compra {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid #ddd;
+  font-size: 1.1rem;
+}
+
+.acciones-compra {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.7rem;
+  margin-top: 1.5rem;
+}
+
+.acciones-compra button {
+  padding: 0.7rem 1rem;
+  border: 0;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.acciones-compra .confirmar {
+  background: #111;
+  color: white;
+}

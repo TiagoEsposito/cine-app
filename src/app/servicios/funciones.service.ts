@@ -22,4 +22,15 @@ export class FuncionesService {
 
     return data ?? [];
   }
+async obtenerFuncion(id: number): Promise<Funcion | null> {
+  const { data, error } = await this.supabase.cliente
+    .from('funciones')
+    .select('*')
+    .eq('id', id)
+    .single();
+
+  if (error) throw error;
+
+  return data as Funcion;
+}
 }

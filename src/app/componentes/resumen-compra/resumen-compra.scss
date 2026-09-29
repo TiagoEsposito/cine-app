@@ -1,0 +1,85 @@
+.resumen-compra-pagina {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.encabezado {
+  margin-bottom: 2rem;
+}
+
+.volver {
+  text-decoration: none;
+}
+
+.etiqueta {
+  margin-top: 1.5rem;
+  text-transform: uppercase;
+  font-size: 0.8rem;
+  letter-spacing: 0.1em;
+}
+
+.contenido {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.pelicula,
+.asientos {
+  padding: 1.25rem;
+  border-radius: 12px;
+  background: #f5f5f5;
+}
+
+.pelicula h2,
+.asientos h2 {
+  margin-top: 0;
+}
+
+.asiento {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.8rem 0;
+  border-bottom: 1px solid #ddd;
+}
+
+.asiento:last-child {
+  border-bottom: 0;
+}
+
+.asiento span {
+  margin-left: 0.5rem;
+  font-size: 0.8rem;
+  color: #666;
+}
+
+.total {
+  display: flex;
+  justify-content: space-between;
+  padding: 1.25rem;
+  border-radius: 12px;
+  background: #111;
+  color: white;
+  font-size: 1.1rem;
+}
+
+.boton {
+  display: inline-block;
+  padding: 0.8rem 1.2rem;
+  border-radius: 8px;
+  background: #111;
+  color: white;
+  text-decoration: none;
+  text-align: center;
+}
+
+.continuar {
+  align-self: flex-end;
+}
+
+.estado {
+  text-align: center;
+  padding: 4rem 1rem;
+}

@@ -1,0 +1,65 @@
+<section class="pago">
+  @if (!compra.tieneSeleccion()) {
+    <div class="estado">
+      <h1>No hay una compra en curso</h1>
+      <a routerLink="/cartelera" class="boton">Volver a cartelera</a>
+    </div>
+  } @else {
+    <div class="encabezado">
+      <a
+        [routerLink]="['/funcion', compra.funcion()!.id, 'resumen']"
+        class="volver"
+      >
+        ← Volver al resumen
+      </a>
+      <p class="etiqueta">Pago</p>
+      <h1>Finalizá tu compra</h1>
+      <p>Esta pantalla simula el proceso de pago para el TP.</p>
+    </div>
+
+    <div class="contenido">
+      <div class="metodo">
+        <h2>Tarjeta</h2>
+        <label>
+          Nombre del titular
+          <input type="text" placeholder="Nombre y apellido" />
+        </label>
+
+        <label>
+          Número de tarjeta
+          <input type="text" inputmode="numeric" placeholder="0000 0000 0000 0000" />
+        </label>
+
+        <div class="fila-pago">
+          <label>
+            Vencimiento
+            <input type="text" placeholder="MM/AA" />
+          </label>
+
+          <label>
+            CVV
+            <input type="password" inputmode="numeric" placeholder="123" />
+          </label>
+        </div>
+      </div>
+
+      <div class="total">
+        <span>Total</span>
+        <strong>${{ obtenerTotal() }}</strong>
+      </div>
+
+      @if (error()) {
+        <p class="error">{{ error() }}</p>
+      }
+
+      <button
+        type="button"
+        class="boton pagar"
+        [disabled]="procesando()"
+        (click)="pagar()"
+      >
+        {{ procesando() ? 'Procesando...' : 'Pagar $' + obtenerTotal() }}
+      </button>
+    </div>
+  }
+</section>

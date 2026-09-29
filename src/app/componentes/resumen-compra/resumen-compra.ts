@@ -1,0 +1,26 @@
+import { Component, inject } from '@angular/core';
+import { RouterLink } from '@angular/router';
+import { CompraService } from '../../servicios/compra.service';
+import { Asiento } from '../../models/asiento.model';
+
+@Component({
+  selector: 'app-resumen-compra',
+  templateUrl: './resumen-compra.html',
+  styleUrl: './resumen-compra.scss',
+  imports: [RouterLink],
+})
+export class ResumenCompra {
+  readonly compra = inject(CompraService);
+
+  obtenerPrecioAsiento(asiento: Asiento): number {
+    const precioBase = this.compra.funcion()?.precio ?? 0;
+    return asiento.tipo === 'vip' ? precioBase * 1.5 : precioBase;
+  }
+
+  obtenerTotal(): number {
+    return this.compra.asientos().reduce(
+      (total, asiento) => total + this.obtenerPrecioAsiento(asiento),
+      0
+    );
+  }
+}

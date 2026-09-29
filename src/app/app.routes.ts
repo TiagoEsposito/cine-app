@@ -23,7 +23,32 @@ export const routes: Routes = [
         .then((m) => m.DetallePelicula),
   },
   {
+    path: 'funcion/:id/resumen',
+    loadComponent: () =>
+      import('./componentes/resumen-compra/resumen-compra')
+        .then((m) => m.ResumenCompra),
+  },
+  {
+    path: 'funcion/:id/pago',
+    loadComponent: () =>
+      import('./componentes/pago/pago')
+        .then((m) => m.Pago),
+  },
+  {
+    path: 'funcion/:id',
+    loadComponent: () =>
+      import('./componentes/seleccion-asientos/seleccion-asientos')
+        .then((m) => m.SeleccionAsientos),
+  },
+  {
+    path: 'compra/:id',
+    loadComponent: () =>
+      import('./componentes/compra-confirmada/compra-confirmada')
+        .then((m) => m.CompraConfirmada),
+  },
+  {
     path: '**',
     redirectTo: 'cartelera',
   },
+
 ];

@@ -35,6 +35,37 @@
             {{ pelicula()!.sinopsis }}
           </p>
         }
+
+        <div class="funciones">
+          <h2>Funciones</h2>
+
+          @if (funciones().length > 0) {
+            <div class="lista-funciones">
+              @for (funcion of funciones(); track funcion.id) {
+                <div class="funcion">
+                  <div>
+                    <strong>{{ funcion.fecha }}</strong>
+                    <span>{{ funcion.hora_inicio }}</span>
+                  </div>
+
+                  <div>
+                    <span>Sala {{ funcion.sala_id }}</span>
+                    <strong>${{ funcion.precio }}</strong>
+                  </div>
+
+                  <a
+                    [routerLink]="['/funcion', funcion.id]"
+                    class="boton-funcion"
+                  >
+                    Elegir función
+                  </a>
+                </div>
+              }
+            </div>
+          } @else {
+            <p>No hay funciones disponibles.</p>
+          }
+        </div>
       </div>
     </article>
   }

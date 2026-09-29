@@ -1,0 +1,61 @@
+<section class="resumen-compra-pagina">
+  @if (!compra.tieneSeleccion()) {
+    <div class="estado">
+      <h1>No hay una compra en curso</h1>
+      <p>Volvé a elegir una función para comenzar.</p>
+      <a routerLink="/cartelera" class="boton">Volver a cartelera</a>
+    </div>
+  } @else {
+    <div class="encabezado">
+      <a
+        [routerLink]="['/funcion', compra.funcion()!.id]"
+        class="volver"
+      >
+        ← Volver a elegir asientos
+      </a>
+      <p class="etiqueta">Tu compra</p>
+      <h1>Resumen de compra</h1>
+      <p>Revisá los datos antes de continuar al pago.</p>
+    </div>
+
+    <div class="contenido">
+      <div class="pelicula">
+        <div>
+          <h2>Función</h2>
+          <p>{{ compra.funcion()!.fecha }} · {{ compra.funcion()!.hora_inicio }}</p>
+          <p>Sala {{ compra.funcion()!.sala_id }}</p>
+        </div>
+      </div>
+
+      <div class="asientos">
+        <h2>Asientos seleccionados</h2>
+
+        @for (asiento of compra.asientos(); track asiento.id) {
+          <div class="asiento">
+            <div>
+              <strong>{{ asiento.fila }}{{ asiento.numero }}</strong>
+              @if (asiento.tipo === 'vip') {
+                <span>VIP</span>
+              } @else if (asiento.tipo === 'accesible') {
+                <span>Accesible</span>
+              }
+            </div>
+            <strong>${{ obtenerPrecioAsiento(asiento) }}</strong>
+          </div>
+        }
+      </div>
+
+      <div class="total">
+        <span>Total a pagar</span>
+        <strong>${{ obtenerTotal() }}</strong>
+      </div>
+
+      <a
+        [routerLink]="['/funcion', compra.funcion()!.id, 'pago']"
+        class="boton continuar"
+      >
+        Ir al pago
+      </a>
+    </div>
+  }
+</section>

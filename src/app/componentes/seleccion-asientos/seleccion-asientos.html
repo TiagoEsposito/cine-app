@@ -1,0 +1,82 @@
+<section class="seleccion-asientos">
+  @if (cargando()) {
+    <p>Cargando función...</p>
+  } @else if (error()) {
+    <p class="error">{{ error() }}</p>
+  } @else if (funcion()) {
+    <div class="encabezado">
+      <a routerLink="/cartelera">← Volver a cartelera</a>
+
+      <h1>Elegí tus asientos</h1>
+
+      <p>
+        Sala {{ funcion()!.sala_id }} · {{ funcion()!.fecha }} · {{ funcion()!.hora_inicio }}
+      </p>
+    </div>
+
+    <div class="pantalla">PANTALLA</div>
+
+    <div class="mapa-asientos">
+      @for (fila of filas; track fila) {
+        <div class="fila">
+          <span class="letra">{{ fila }}</span>
+
+          <div class="asientos">
+            @for (asiento of obtenerAsientosPorFila(fila); track asiento.id) {
+              <button
+                type="button"
+                class="asiento"
+                [style.grid-column]="
+                  fila === 'J' || fila === 'K'
+                    ? asiento.numero + 7
+                    : asiento.numero <= 4
+                      ? asiento.numero
+                      : asiento.numero <= 24
+                        ? asiento.numero + 1
+                        : asiento.numero + 2
+                "
+                [class.accesible]="asiento.tipo === 'accesible'"
+                [class.vip]="asiento.tipo === 'vip'"
+                [class.ocupado]="estaOcupado(asiento.id)"
+                [class.seleccionado]="estaSeleccionado(asiento.id)"
+                [disabled]="estaOcupado(asiento.id)"
+                (click)="alternarAsiento(asiento)"
+              >
+                {{ asiento.numero }}
+              </button>
+            }
+          </div>
+        </div>
+      }
+    </div>
+
+    <div class="leyenda">
+      <span>● Normal</span>
+      <span>● Accesible</span>
+      <span>● VIP</span>
+      <span>● Ocupado</span>
+    </div>
+
+    <div class="resumen">
+      <div>
+        <strong>Asientos:</strong>
+        {{ asientosSeleccionados().length }}
+      </div>
+
+      <div>
+        <strong>Total:</strong>
+        ${{ obtenerTotal() }}
+      </div>
+    </div>
+
+    @if (asientosSeleccionados().length > 0) {
+      <button
+        type="button"
+        class="boton-continuar"
+        (click)="continuarCompra()"
+      >
+        Continuar con la compra
+      </button>
+    }
+  }
+</section>
