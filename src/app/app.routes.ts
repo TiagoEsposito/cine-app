@@ -1,7 +1,11 @@
 import { Routes } from '@angular/router';
 
 export const routes: Routes = [
-  { path: '', pathMatch: 'full', redirectTo: 'cartelera' },
+  {
+    path: '',
+    pathMatch: 'full',
+    redirectTo: 'cartelera',
+  },
   {
     path: 'cartelera',
     loadComponent: () =>
@@ -12,5 +16,14 @@ export const routes: Routes = [
     loadComponent: () =>
       import('./componentes/registro/registro').then((m) => m.Registro),
   },
-  { path: '**', redirectTo: 'cartelera' },
+  {
+    path: 'pelicula/:id',
+    loadComponent: () =>
+      import('./componentes/detalle-pelicula/detalle-pelicula')
+        .then((m) => m.DetallePelicula),
+  },
+  {
+    path: '**',
+    redirectTo: 'cartelera',
+  },
 ];

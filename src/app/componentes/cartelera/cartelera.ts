@@ -3,14 +3,19 @@ import { Pelicula } from '../../models/pelicula.model';
 import { PeliculasService } from '../../servicios/peliculas.service';
 import { Resena } from '../../models/resena.model';
 import { AuthService } from '../../servicios/auth.service';
+import { Funcion } from '../../models/funcion.model';
+import { FuncionesService } from '../../servicios/funciones.service';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-cartelera',
   templateUrl: './cartelera.html',
   styleUrl: './cartelera.scss',
+  imports: [RouterLink],
 })
 export class Cartelera implements OnInit {
   private readonly peliculasService = inject(PeliculasService);
+  private readonly funcionesService = inject(FuncionesService);
   readonly auth = inject(AuthService);
 
   readonly peliculas = signal<Pelicula[]>([]);
@@ -23,6 +28,7 @@ export class Cartelera implements OnInit {
   readonly generoSeleccionado = signal<number | null>(null);
 
   readonly resenas = signal<Record<number, Resena[]>>({});
+  readonly funciones = signal<Record<number, Funcion[]>>({});
   readonly puntuacionSeleccionada = signal(0);
   readonly comentarioResena = signal('');
   readonly publicandoResena = signal(false);
@@ -63,6 +69,15 @@ export class Cartelera implements OnInit {
       );
 
       this.resenas.set(Object.fromEntries(resenasPorPelicula));
+      const funcionesPorPelicula = await Promise.all(
+        peliculas.map(async (pelicula) => {
+          const funciones = await this.funcionesService.obtenerFunciones(pelicula.id);
+
+          return [pelicula.id, funciones] as const;
+  })
+);
+
+this.funciones.set(Object.fromEntries(funcionesPorPelicula));
     } catch (error: unknown) {
       const mensaje =
         error instanceof Error

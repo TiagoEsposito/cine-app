@@ -69,4 +69,17 @@ async crearResena(
 
   return data as Resena;
 }
+async obtenerPelicula(id: number): Promise<Pelicula | null> {
+  const { data, error } = await this.supabase.cliente
+    .from('peliculas')
+    .select('*, generos(id, nombre)')
+    .eq('id', id)
+    .single();
+
+  if (error) {
+    throw error;
+  }
+
+  return data as Pelicula;
+}
 }

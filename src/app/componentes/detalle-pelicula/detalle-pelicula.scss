@@ -1,0 +1,44 @@
+.detalle-pelicula {
+  padding: 2rem;
+}
+
+.pelicula-detalle {
+  display: flex;
+  gap: 2rem;
+}
+
+.pelicula-detalle img {
+  width: 300px;
+  border-radius: 12px;
+}
+
+.informacion {
+  max-width: 700px;
+}
+
+.etiqueta {
+  text-transform: uppercase;
+  font-size: 0.8rem;
+  letter-spacing: 0.1em;
+}
+
+.datos {
+  color: #666;
+}
+
+.generos {
+  display: flex;
+  gap: 0.5rem;
+  padding: 0;
+  list-style: none;
+}
+
+.generos li {
+  padding: 0.3rem 0.7rem;
+  border-radius: 999px;
+  background: #eee;
+}
+
+.sinopsis {
+  line-height: 1.6;
+}

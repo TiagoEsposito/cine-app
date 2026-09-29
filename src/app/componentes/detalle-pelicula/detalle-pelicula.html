@@ -1,0 +1,41 @@
+<section class="detalle-pelicula">
+  @if (cargando()) {
+    <p>Cargando película...</p>
+  } @else if (error()) {
+    <p>{{ error() }}</p>
+  } @else if (pelicula()) {
+    <article class="pelicula-detalle">
+      @if (pelicula()!.url_poster) {
+        <img
+          [src]="pelicula()!.url_poster"
+          [alt]="'Póster de ' + pelicula()!.titulo"
+        />
+      }
+
+      <div class="informacion">
+        <p class="etiqueta">Película</p>
+
+        <h1>{{ pelicula()!.titulo }}</h1>
+
+        <p class="datos">
+          {{ pelicula()!.duracion_minutos }} min ·
+          +{{ pelicula()!.edad_minima }}
+        </p>
+
+        @if (pelicula()!.generos?.length) {
+          <ul class="generos">
+            @for (genero of pelicula()!.generos; track genero.id) {
+              <li>{{ genero.nombre }}</li>
+            }
+          </ul>
+        }
+
+        @if (pelicula()!.sinopsis) {
+          <p class="sinopsis">
+            {{ pelicula()!.sinopsis }}
+          </p>
+        }
+      </div>
+    </article>
+  }
+</section>
