@@ -1,40 +1,48 @@
 <section class="cartelera">
-  <div class="encabezado">
-    <p class="etiqueta">Cine</p>
-    <h1>Cartelera</h1>
-    <p>Películas disponibles actualmente.</p>
+  <div class="hero-cartelera">
+    <div class="hero-copy">
+      <span class="etiqueta">Cine Avellaneda · Cartelera</span>
+      <h1>Elegí qué querés<br /><em>ver hoy.</em></h1>
+      <p>Películas, horarios y funciones en un solo lugar.</p>
+    </div>
+    <div class="hero-sello">
+      <span>CA</span>
+      <small>AVELLANEDA</small>
+    </div>
   </div>
 
-  <div class="buscador">
-    <label for="buscar-pelicula">Buscar película</label>
-    <input
-      id="buscar-pelicula"
-      type="search"
-      placeholder="Buscar por título..."
-      [value]="busqueda()"
-      (input)="busqueda.set($any($event.target).value)"
-    />
-  </div>
+  <div class="filtros">
+    <div class="buscador">
+      <label for="buscar-pelicula">Buscar película</label>
+      <div class="campo-icono">
+        <span aria-hidden="true">⌕</span>
+        <input
+          id="buscar-pelicula"
+          type="search"
+          placeholder="Título de película..."
+          [value]="busqueda()"
+          (input)="busqueda.set($any($event.target).value)"
+        />
+      </div>
+    </div>
 
-  <div class="filtro-genero">
-    <label for="genero">Filtrar por género</label>
-    <select
-      id="genero"
-      [value]="generoSeleccionado() ?? ''"
-      (change)="generoSeleccionado.set($any($event.target).value ? +$any($event.target).value : null)"
-    >
-      <option value="">Todos los géneros</option>
-
-      @for (genero of generos(); track genero.id) {
-        <option [value]="genero.id">
-          {{ genero.nombre }}
-        </option>
-      }
-    </select>
+    <div class="filtro-genero">
+      <label for="genero">Género</label>
+      <select
+        id="genero"
+        [value]="generoSeleccionado() ?? ''"
+        (change)="generoSeleccionado.set($any($event.target).value ? +$any($event.target).value : null)"
+      >
+        <option value="">Todos los géneros</option>
+        @for (genero of generos(); track genero.id) {
+          <option [value]="genero.id">{{ genero.nombre }}</option>
+        }
+      </select>
+    </div>
   </div>
 
   @if (cargando()) {
-    <p class="estado">Cargando películas...</p>
+    <div class="estado carga"><span class="loader"></span> Cargando cartelera...</div>
   } @else if (error()) {
     <div class="estado error" role="alert">
       <strong>No pudimos cargar la cartelera.</strong>
@@ -43,44 +51,42 @@
   } @else if (peliculas().length === 0) {
     <p class="estado">No hay películas para mostrar.</p>
   } @else if (peliculasFiltradas().length === 0) {
-    <p class="estado">
-      No encontramos películas con esos filtros.
-    </p>
+    <p class="estado">No encontramos películas con esos filtros.</p>
   } @else {
+    <div class="seccion-titulo">
+      <div>
+        <span>AHORA EN CARTELERA</span>
+        <h2>Películas</h2>
+      </div>
+      <small>{{ peliculasFiltradas().length }} títulos</small>
+    </div>
+
     <div class="peliculas">
       @for (pelicula of peliculasFiltradas(); track pelicula.id) {
-        <article
-        class="pelicula"
-        [routerLink]="['/pelicula', pelicula.id]">
-          @if (pelicula.url_poster) {
-            <img
-              [src]="pelicula.url_poster"
-              [alt]="'Póster de ' + pelicula.titulo"
-              loading="lazy"
-            />
-          } @else {
-            <div class="poster-vacio">
-              Sin póster
-            </div>
-          }
+        <article class="pelicula" [routerLink]="['/pelicula', pelicula.id]">
+          <div class="poster-wrap">
+            @if (pelicula.url_poster) {
+              <img
+                [src]="pelicula.url_poster"
+                [alt]="'Póster de ' + pelicula.titulo"
+                loading="lazy"
+              />
+            } @else {
+              <div class="poster-vacio">Sin póster</div>
+            }
+            <div class="poster-overlay"><span>Ver película</span><b>↗</b></div>
+            <span class="edad">+{{ pelicula.edad_minima }}</span>
+          </div>
 
           <div class="informacion">
-            <h2>{{ pelicula.titulo }}</h2>
+            <div class="titulo-linea">
+              <h2>{{ pelicula.titulo }}</h2>
+              @if (promedios()[pelicula.id] !== undefined) {
+                <span class="promedio">★ {{ promedios()[pelicula.id].toFixed(1) }}</span>
+              }
+            </div>
 
-            <p class="datos">
-              {{ pelicula.duracion_minutos }} min · +{{ pelicula.edad_minima }}
-            </p>
-
-            @if (promedios()[pelicula.id] !== undefined) {
-              <p class="promedio">
-                ⭐ {{ promedios()[pelicula.id].toFixed(1) }}
-                ({{ resenas()[pelicula.id].length }})
-              </p>
-            } @else {
-              <p class="promedio">
-                ⭐ Sin reseñas
-              </p>
-            }
+            <p class="datos">{{ pelicula.duracion_minutos }} min</p>
 
             @if (pelicula.generos?.length) {
               <ul class="generos">
@@ -91,12 +97,14 @@
             }
 
             @if (pelicula.sinopsis) {
-              <p>{{ pelicula.sinopsis }}</p>
+              <p class="sinopsis">{{ pelicula.sinopsis }}</p>
             }
 
             <div class="funciones">
-              <h3>Funciones</h3>
-
+              <div class="funciones-titulo">
+                <h3>Próximas funciones</h3>
+                <span>›</span>
+              </div>
               @if (funciones()[pelicula.id]?.length) {
                 <div class="lista-funciones">
                   @for (funcion of funciones()[pelicula.id]; track funcion.id) {
@@ -108,13 +116,10 @@
                   }
                 </div>
               } @else {
-                <p class="sin-funciones">
-                  No hay funciones disponibles.
-                </p>
+                <p class="sin-funciones">No hay funciones disponibles.</p>
               }
             </div>
           </div>
-
         </article>
       }
     </div>

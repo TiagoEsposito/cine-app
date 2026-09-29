@@ -1,12 +1,28 @@
 <header class="barra">
-  <a routerLink="/cartelera" class="marca">Cine</a>
+  <div class="barra-interior">
+    <a routerLink="/cartelera" class="marca" aria-label="Cine Avellaneda - inicio">
+      <span class="marca-icono">CA</span>
+      <span>
+        <strong>Cine Avellaneda</strong>
+        <small>Tu próxima función empieza acá</small>
+      </span>
+    </a>
 
-  <nav aria-label="Navegación principal">
-    <a routerLink="/cartelera" routerLinkActive="activo">Cartelera</a>
-    <a routerLink="/registro" routerLinkActive="activo">Registrarse</a>
-  </nav>
+    <nav aria-label="Navegación principal">
+      <a routerLink="/cartelera" routerLinkActive="activo">Cartelera</a>
+      <a routerLink="/registro" routerLinkActive="activo">Crear cuenta</a>
+    </nav>
+  </div>
 </header>
 
 <main class="contenido">
   <router-outlet />
 </main>
+
+<footer class="pie">
+  <div>
+    <strong>Cine Avellaneda</strong>
+    <span>Una experiencia pensada para disfrutar la película.</span>
+  </div>
+  <span>© 2026 Cine Avellaneda</span>
+</footer>

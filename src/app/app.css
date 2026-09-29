@@ -1,38 +1,112 @@
 .barra {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(12, 13, 17, 0.94);
+  backdrop-filter: blur(18px);
+}
+
+.barra-interior {
+  width: min(1180px, calc(100% - 2rem));
+  min-height: 76px;
+  margin: 0 auto;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 1rem;
-  padding: 1rem 2rem;
-  border-bottom: 1px solid #e5e7eb;
-  background: #ffffff;
+  gap: 2rem;
 }
 
 .marca {
-  color: #111827;
-  font-size: 1.5rem;
-  font-weight: 800;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: #fffaf0;
   text-decoration: none;
+}
+
+.marca-icono {
+  display: grid;
+  width: 40px;
+  height: 40px;
+  place-items: center;
+  border-radius: 11px;
+  background: #e7a93b;
+  color: #17120a;
+  font-size: 0.8rem;
+  font-weight: 900;
+  letter-spacing: -0.04em;
+}
+
+.marca span:last-child {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+}
+
+.marca strong {
+  font-size: 1rem;
+  letter-spacing: -0.02em;
+}
+
+.marca small {
+  color: #92949d;
+  font-size: 0.68rem;
 }
 
 nav {
   display: flex;
-  gap: 1rem;
+  align-items: center;
+  gap: 0.35rem;
 }
 
 nav a {
-  color: #4b5563;
+  padding: 0.55rem 0.8rem;
+  border-radius: 9px;
+  color: #bfc1c8;
+  font-size: 0.88rem;
+  font-weight: 650;
   text-decoration: none;
+  transition: 0.2s ease;
 }
 
 nav a:hover,
 nav a.activo {
-  color: #111827;
-  font-weight: 600;
+  background: rgba(231, 169, 59, 0.12);
+  color: #f2c66f;
 }
 
 .contenido {
-  width: min(1100px, calc(100% - 2rem));
+  width: min(1180px, calc(100% - 2rem));
+  min-height: calc(100vh - 150px);
   margin: 0 auto;
-  padding: 2rem 0;
+  padding: 2.5rem 0 4rem;
+}
+
+.pie {
+  width: min(1180px, calc(100% - 2rem));
+  margin: 0 auto;
+  padding: 1.5rem 0 2rem;
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  border-top: 1px solid #dedbd3;
+  color: #77736c;
+  font-size: 0.75rem;
+}
+
+.pie div {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.pie strong { color: #27251f; }
+
+@media (max-width: 700px) {
+  .barra-interior { min-height: 68px; }
+  .marca small { display: none; }
+  nav a { padding: 0.45rem 0.55rem; font-size: 0.8rem; }
+  .contenido { padding-top: 1.5rem; }
+  .pie { flex-direction: column; }
 }

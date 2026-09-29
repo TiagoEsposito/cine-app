@@ -1,34 +1,90 @@
+.registro {
+  width: min(620px, 100%);
+  margin: 0 auto;
+}
+
+.registro > h1 {
+  margin: 0;
+  color: #171713;
+  font-size: clamp(2rem, 4vw, 3rem);
+  letter-spacing: -.05em;
+}
+
+.registro > p {
+  margin: .55rem 0 1.8rem;
+  color: #858078;
+}
+
 form {
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
-  max-width: 420px;
+  gap: .8rem;
+  padding: 1.5rem;
+  border: 1px solid #dedbd3;
+  border-radius: 18px;
+  background: #fffdf9;
+  box-shadow: 0 14px 35px rgba(30,28,22,.06);
 }
 
 label {
   display: flex;
   flex-direction: column;
-  gap: 0.25rem;
+  gap: .4rem;
+  color: #625e56;
+  font-size: .73rem;
+  font-weight: 750;
 }
+
+input,
+select {
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 44px;
+  padding: .7rem .8rem;
+  border: 1px solid #d6d1c7;
+  border-radius: 10px;
+  outline: none;
+  background: #fff;
+  color: #27251f;
+  font: inherit;
+  transition: .2s ease;
+}
+
+input:focus,
+select:focus { border-color: #e7a93b; box-shadow: 0 0 0 3px rgba(231,169,59,.12); }
 
 fieldset {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: .65rem;
+  margin: .35rem 0;
+  padding: .95rem;
+  border: 1px solid #e1ddd4;
+  border-radius: 12px;
 }
 
-.fila {
-  display: flex;
-  gap: 0.5rem;
+legend { padding: 0 .35rem; color: #777169; font-size: .7rem; font-weight: 800; }
+
+.fila { display: grid; grid-template-columns: 1fr 1fr 1.4fr; gap: .6rem; }
+
+.errores { margin: -.25rem 0 .2rem; padding-left: 1rem; color: #9a3535; font-size: .72rem; }
+.error-general { margin: 0; padding: .8rem; border-radius: 9px; background: #fff0ee; color: #8b3030; font-size: .8rem; }
+
+button {
+  min-height: 46px;
+  margin-top: .35rem;
+  border: 0;
+  border-radius: 10px;
+  background: #181713;
+  color: #fffaf0;
+  cursor: pointer;
+  font: inherit;
+  font-size: .82rem;
+  font-weight: 800;
+  transition: .2s ease;
 }
 
-.errores {
-  color: #b00020;
-  margin: 0;
-  padding-left: 1rem;
-  font-size: 0.875rem;
-}
+button:hover:not(:disabled) { background: #9b690e; transform: translateY(-1px); }
+button:disabled { cursor: wait; opacity: .55; }
 
-.error-general {
-  color: #b00020;
-}
+@media (max-width: 520px) { .fila { grid-template-columns: 1fr 1fr 1fr; } }

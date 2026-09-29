@@ -22,23 +22,23 @@
         <h2>Tarjeta</h2>
         <label>
           Nombre del titular
-          <input type="text" placeholder="Nombre y apellido" />
+          <input type="text" name="nombreTitular" autocomplete="cc-name" placeholder="Nombre y apellido" />
         </label>
 
         <label>
           Número de tarjeta
-          <input type="text" inputmode="numeric" placeholder="0000 0000 0000 0000" />
+          <input type="text" name="numeroTarjeta" inputmode="numeric" autocomplete="cc-number" placeholder="0000 0000 0000 0000" />
         </label>
 
         <div class="fila-pago">
           <label>
             Vencimiento
-            <input type="text" placeholder="MM/AA" />
+            <input type="text" name="vencimiento" autocomplete="cc-exp" placeholder="MM/AA" />
           </label>
 
           <label>
             CVV
-            <input type="password" inputmode="numeric" placeholder="123" />
+            <input type="password" name="cvv" inputmode="numeric" autocomplete="cc-csc" placeholder="123" />
           </label>
         </div>
       </div>
