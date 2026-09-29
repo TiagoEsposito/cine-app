@@ -1,10 +1,33 @@
 <section class="cartelera">
   <div class="encabezado">
-    <div>
-      <p class="etiqueta">Cine</p>
-      <h1>Cartelera</h1>
-      <p>Películas disponibles actualmente.</p>
-    </div>
+    <p class="etiqueta">Cine</p>
+    <h1>Cartelera</h1>
+    <p>Películas disponibles actualmente.</p>
+  </div>
+
+  <div class="buscador">
+    <label for="buscar-pelicula">Buscar película</label>
+    <input
+      id="buscar-pelicula"
+      type="search"
+      placeholder="Buscar por título..."
+      [value]="busqueda()"
+      (input)="busqueda.set($any($event.target).value)"
+    />
+  </div>
+
+  <div class="filtro-genero">
+    <label for="genero">Filtrar por género</label>
+    <select
+      id="genero"
+      [value]="generoSeleccionado() ?? ''"
+      (change)="generoSeleccionado.set($any($event.target).value ? +$any($event.target).value : null)"
+    >
+      <option value="">Todos los géneros</option>
+      @for (genero of generos(); track genero.id) {
+        <option [value]="genero.id">{{ genero.nombre }}</option>
+      }
+    </select>
   </div>
 
   @if (cargando()) {
@@ -16,9 +39,11 @@
     </div>
   } @else if (peliculas().length === 0) {
     <p class="estado">No hay películas para mostrar.</p>
+  } @else if (peliculasFiltradas().length === 0) {
+    <p class="estado">No encontramos películas con esos filtros.</p>
   } @else {
     <div class="peliculas">
-      @for (pelicula of peliculas(); track pelicula.id) {
+      @for (pelicula of peliculasFiltradas(); track pelicula.id) {
         <article class="pelicula">
           @if (pelicula.url_poster) {
             <img
@@ -27,14 +52,25 @@
               loading="lazy"
             />
           } @else {
-            <div class="poster-vacio" aria-hidden="true">Sin póster</div>
+            <div class="poster-vacio">Sin póster</div>
           }
 
           <div class="informacion">
             <h2>{{ pelicula.titulo }}</h2>
+
             <p class="datos">
               {{ pelicula.duracion_minutos }} min · +{{ pelicula.edad_minima }}
             </p>
+
+            @if (promedios()[pelicula.id] !== undefined) {
+              <p class="promedio">
+                ⭐ {{ promedios()[pelicula.id].toFixed(1) }}
+                ({{ resenas()[pelicula.id].length }}
+                reseña{{ resenas()[pelicula.id].length === 1 ? '' : 's' }})
+              </p>
+            } @else {
+              <p class="promedio">⭐ Sin reseñas</p>
+            }
 
             @if (pelicula.generos?.length) {
               <ul class="generos">
@@ -46,6 +82,65 @@
 
             @if (pelicula.sinopsis) {
               <p>{{ pelicula.sinopsis }}</p>
+            }
+
+            <div class="resenas">
+              <h3>Reseñas</h3>
+
+              @if (resenas()[pelicula.id]?.length) {
+                @for (resena of resenas()[pelicula.id]; track resena.id) {
+                  <div class="resena">
+                    <div class="estrellas">
+                      {{ '★'.repeat(resena.puntuacion) }}
+                    </div>
+
+                    <p>{{ resena.comentario }}</p>
+                  </div>
+                }
+              } @else {
+                <p class="sin-resenas">Todavía no hay reseñas.</p>
+              }
+            </div>
+
+            @if (auth.haIniciadoSesion()) {
+              <div class="formulario-resena">
+                <h3>Dejá tu reseña</h3>
+
+                <div class="selector-estrellas">
+                  @for (estrella of [1, 2, 3, 4, 5]; track estrella) {
+                    <button
+                      type="button"
+                      [class.seleccionada]="estrella <= puntuacionSeleccionada()"
+                      (click)="puntuacionSeleccionada.set(estrella)"
+                    >
+                      ★
+                    </button>
+                  }
+                </div>
+
+                <textarea
+                  placeholder="Escribí tu opinión..."
+                  [value]="comentarioResena()"
+                  (input)="comentarioResena.set($any($event.target).value)"
+                  rows="3"
+                ></textarea>
+
+                @if (errorResena()) {
+                  <p class="error-resena">{{ errorResena() }}</p>
+                }
+
+                <button
+                  type="button"
+                  (click)="publicarResena(pelicula.id)"
+                  [disabled]="publicandoResena()"
+                >
+                  {{
+                    publicandoResena()
+                      ? 'Publicando...'
+                      : 'Publicar reseña'
+                  }}
+                </button>
+              </div>
             }
           </div>
         </article>

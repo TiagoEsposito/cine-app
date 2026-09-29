@@ -1,6 +1,8 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, OnInit, signal, computed } from '@angular/core';
 import { Pelicula } from '../../models/pelicula.model';
 import { PeliculasService } from '../../servicios/peliculas.service';
+import { Resena } from '../../models/resena.model';
+import { AuthService } from '../../servicios/auth.service';
 
 @Component({
   selector: 'app-cartelera',
@@ -9,21 +11,138 @@ import { PeliculasService } from '../../servicios/peliculas.service';
 })
 export class Cartelera implements OnInit {
   private readonly peliculasService = inject(PeliculasService);
+  readonly auth = inject(AuthService);
 
   readonly peliculas = signal<Pelicula[]>([]);
   readonly error = signal<string | null>(null);
   readonly cargando = signal(true);
 
+  readonly busqueda = signal('');
+
+  readonly generos = signal<{ id: number; nombre: string }[]>([]);
+  readonly generoSeleccionado = signal<number | null>(null);
+
+  readonly resenas = signal<Record<number, Resena[]>>({});
+  readonly puntuacionSeleccionada = signal(0);
+  readonly comentarioResena = signal('');
+  readonly publicandoResena = signal(false);
+  readonly errorResena = signal<string | null>(null);
+
+  readonly peliculasFiltradas = computed(() => {
+    const texto = this.busqueda().trim().toLowerCase();
+    const genero = this.generoSeleccionado();
+
+    return this.peliculas().filter((pelicula) => {
+      const coincideTitulo =
+        !texto || pelicula.titulo.toLowerCase().includes(texto);
+
+      const coincideGenero =
+        genero === null ||
+        pelicula.generos?.some((g) => g.id === genero);
+
+      return coincideTitulo && coincideGenero;
+    });
+  });
+
   async ngOnInit(): Promise<void> {
     try {
-      this.peliculas.set(await this.peliculasService.obtenerPeliculas());
+      const [peliculas, generos] = await Promise.all([
+        this.peliculasService.obtenerPeliculas(),
+        this.peliculasService.obtenerGeneros(),
+      ]);
+
+      this.peliculas.set(peliculas);
+      this.generos.set(generos);
+
+      const resenasPorPelicula = await Promise.all(
+        peliculas.map(async (pelicula) => {
+          const resenas = await this.peliculasService.obtenerResenas(pelicula.id);
+
+          return [pelicula.id, resenas] as const;
+        })
+      );
+
+      this.resenas.set(Object.fromEntries(resenasPorPelicula));
     } catch (error: unknown) {
-      const mensaje = error instanceof Error
-        ? error.message
-        : 'Error al cargar las películas.';
+      const mensaje =
+        error instanceof Error
+          ? error.message
+          : 'Error al cargar la cartelera.';
+
       this.error.set(mensaje);
     } finally {
       this.cargando.set(false);
     }
   }
+readonly promedios = computed(() => {
+  const resultado: Record<number, number> = {};
+
+  for (const [peliculaId, resenas] of Object.entries(this.resenas())) {
+    if (resenas.length === 0) {
+      continue;
+    }
+
+    const suma = resenas.reduce(
+      (total, resena) => total + resena.puntuacion,
+      0
+    );
+
+    resultado[Number(peliculaId)] = suma / resenas.length;
+  }
+
+  return resultado;
+});
+async publicarResena(peliculaId: number): Promise<void> {
+  const usuarioId = this.auth.sesion()?.user.id;
+  const puntuacion = this.puntuacionSeleccionada();
+  const comentario = this.comentarioResena().trim();
+
+  if (!usuarioId) {
+    this.errorResena.set('Tenés que iniciar sesión para publicar una reseña.');
+    return;
+  }
+
+  if (puntuacion === 0) {
+    this.errorResena.set('Seleccioná una puntuación.');
+    return;
+  }
+
+  if (!comentario) {
+    this.errorResena.set('Escribí un comentario.');
+    return;
+  }
+
+  this.publicandoResena.set(true);
+  this.errorResena.set(null);
+
+  try {
+    const nuevaResena = await this.peliculasService.crearResena(
+      peliculaId,
+      usuarioId,
+      puntuacion,
+      comentario
+    );
+
+    this.resenas.update((actuales) => ({
+      ...actuales,
+      [peliculaId]: [
+        nuevaResena,
+        ...(actuales[peliculaId] ?? []),
+      ],
+    }));
+
+    this.puntuacionSeleccionada.set(0);
+    this.comentarioResena.set('');
+  } catch (error: unknown) {
+    const mensaje =
+      error instanceof Error
+        ? error.message
+        : 'No se pudo publicar la reseña.';
+
+    this.errorResena.set(mensaje);
+  } finally {
+    this.publicandoResena.set(false);
+  }
+}
+
 }

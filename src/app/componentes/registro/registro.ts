@@ -121,20 +121,20 @@ export class Registro {
   );
 
   private armarFecha(dia: string, mes: string, anio: string): string | null {
-    const d = Number(dia);
-    const m = Number(mes);
-    const a = Number(anio);
+  const d = Number(dia);
+  const m = Number(mes);
+  const a = Number(anio);
 
-    const fecha = new Date(a, m - 1, d);
-    const esValida =
-      fecha.getFullYear() === a &&
-      fecha.getMonth() === m - 1 &&
-      fecha.getDate() === d &&
-      a >= 1900 &&
-      fecha <= new Date();
+  const fecha = new Date(a, m - 1, d);
 
-    if (!esValida) return null;
-
-    return `${a}-${String(m).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+  if (
+    fecha.getFullYear() !== a ||
+    fecha.getMonth() !== m - 1 ||
+    fecha.getDate() !== d ||
+    fecha > new Date()
+  ) {
+    return null;
   }
-}
+
+  return `${a}-${String(m).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+}}
