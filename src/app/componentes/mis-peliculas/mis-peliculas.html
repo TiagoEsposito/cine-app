@@ -1,0 +1,42 @@
+<section class="mis-peliculas">
+  <div class="encabezado">
+    <div>
+      <a routerLink="/perfil" class="volver">← Mi cuenta</a>
+      <p class="etiqueta">Tu historial</p>
+      <h1>Mis películas</h1>
+      <p>Las funciones que compraste en Cine Avellaneda.</p>
+    </div>
+  </div>
+
+  @if (cargando()) {
+    <div class="estado">Cargando tus películas...</div>
+  } @else if (error()) {
+    <div class="estado error">{{ error() }}</div>
+  } @else if (!compras().length) {
+    <div class="vacio">
+      <strong>Todavía no tenés películas acá.</strong>
+      <span>Cuando compres una entrada, va a aparecer en este espacio.</span>
+      <a routerLink="/cartelera">Ver cartelera</a>
+    </div>
+  } @else {
+    <div class="lista">
+      @for (compra of compras(); track compra.id) {
+        <article class="pelicula-comprada">
+          <div class="poster">
+            @if (compra.pelicula.url_poster) { <img [src]="compra.pelicula.url_poster" [alt]="compra.pelicula.titulo" /> }
+          </div>
+          <div class="datos">
+            <div class="estado">Compra #{{ compra.id }}</div>
+            <h2>{{ compra.pelicula.titulo }}</h2>
+            <p class="funcion">{{ formatearFecha(compra.funcion.fecha) }} · {{ compra.funcion.hora_inicio }} · Sala {{ compra.funcion.sala_id }}</p>
+            <p class="asientos">Asientos {{ obtenerAsientos(compra) }}</p>
+            <div class="pie-card">
+              <strong>${{ compra.total }}</strong>
+              <a [routerLink]="['/pelicula', compra.pelicula.id]">Ver película →</a>
+            </div>
+          </div>
+        </article>
+      }
+    </div>
+  }
+</section>

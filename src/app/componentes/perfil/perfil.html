@@ -1,0 +1,78 @@
+<section class="perfil-pagina">
+  <div class="encabezado-perfil">
+    <div>
+      <p class="etiqueta">Mi cuenta</p>
+      <h1>{{ auth.perfil()?.nombre }} {{ auth.perfil()?.apellido }}</h1>
+      <p>Administrá tus datos, puntos y compras de Cine Avellaneda.</p>
+    </div>
+    <div class="avatar">{{ (auth.perfil()?.nombre?.charAt(0) ?? 'U') | uppercase }}{{ (auth.perfil()?.apellido?.charAt(0) ?? '') | uppercase }}</div>
+  </div>
+
+  @if (mensaje()) { <div class="mensaje">✓ {{ mensaje() }}</div> }
+  @if (error()) { <div class="error">{{ error() }}</div> }
+
+  <div class="resumen-cuenta">
+    <article><span>Puntos</span><strong>{{ auth.perfil()?.puntos ?? 0 }}</strong><small>1 punto por peso</small></article>
+    <article><span>Crédito disponible</span><strong>${{ formatearDinero(auth.perfil()?.credito ?? 0) }}</strong><small>Por cancelaciones</small></article>
+    <article><span>Rol</span><strong>{{ auth.perfil()?.rol }}</strong><small>Cuenta Cine Avellaneda</small></article>
+  </div>
+
+  <div class="grid-perfil">
+    <section class="tarjeta datos-cuenta">
+      <div class="cabecera-tarjeta">
+        <div><span>Datos de registro</span><h2>Tu información</h2></div>
+        @if (!editando()) { <button type="button" (click)="empezarEdicion()">Editar</button> }
+        <button type="button" class="salir" (click)="cerrarSesion()">Cerrar sesión</button>
+      </div>
+
+      @if (!editando()) {
+        <dl>
+          <div><dt>Nombre y apellido</dt><dd>{{ auth.perfil()?.nombre }} {{ auth.perfil()?.apellido }}</dd></div>
+          <div><dt>Email</dt><dd>{{ auth.perfil()?.email }}</dd></div>
+          <div><dt>Fecha de nacimiento</dt><dd>{{ formatearFecha(auth.perfil()?.fecha_nacimiento) }}</dd></div>
+          <div><dt>Tipo de sangre</dt><dd>{{ auth.perfil()?.tipo_sangre || '—' }}</dd></div>
+          <div><dt>Color de ojos</dt><dd>{{ auth.perfil()?.color_ojos || '—' }}</dd></div>
+          <div><dt>Días de vacaciones</dt><dd>{{ auth.perfil()?.dias_vacaciones ?? '—' }}</dd></div>
+        </dl>
+      } @else {
+        <div class="formulario-perfil">
+          <label>Nombre<input [value]="nombre()" (input)="nombre.set($any($event.target).value)" /></label>
+          <label>Apellido<input [value]="apellido()" (input)="apellido.set($any($event.target).value)" /></label>
+          <label>Email<input [value]="auth.perfil()?.email" disabled /></label>
+          <label>Fecha de nacimiento<input type="date" [value]="fechaNacimiento()" (input)="fechaNacimiento.set($any($event.target).value)" /></label>
+          <label>Tipo de sangre<select [value]="tipoSangre()" (change)="tipoSangre.set($any($event.target).value)"><option value="">Elegí una opción</option>@for (tipo of tiposSangre; track tipo) {<option [value]="tipo">{{ tipo }}</option>}</select></label>
+          <label>Color de ojos<select [value]="colorOjos()" (change)="colorOjos.set($any($event.target).value)"><option value="">Elegí una opción</option>@for (color of coloresOjos; track color) {<option [value]="color">{{ color }}</option>}</select></label>
+          <label>Días de vacaciones<input inputmode="numeric" [value]="diasVacaciones()" (input)="diasVacaciones.set($any($event.target).value)" /></label>
+          <div class="acciones-form"><button type="button" class="secundario" (click)="cancelarEdicion()">Cancelar</button><button type="button" class="principal" [disabled]="guardando()" (click)="guardarPerfil()">{{ guardando() ? 'Guardando...' : 'Guardar cambios' }}</button></div>
+        </div>
+      }
+    </section>
+
+    <section class="tarjeta atajos">
+      <span>Tu actividad</span><h2>Mis películas</h2>
+      <p>Consultá tus entradas, funciones, asientos y reseñas desde un solo lugar.</p>
+      <a routerLink="/mis-peliculas">Ver mis películas →</a>
+    </section>
+  </div>
+
+  <section class="tarjeta historial">
+    <div class="cabecera-tarjeta"><div><span>Actividad</span><h2>Historial de compras</h2></div><small>{{ compras().length }} compra{{ compras().length === 1 ? '' : 's' }}</small></div>
+
+    @if (errorCancelacion()) { <div class="error">{{ errorCancelacion() }}</div> }
+    @if (cargando()) { <div class="vacio">Cargando historial...</div> }
+    @else if (!compras().length) { <div class="vacio">Todavía no tenés compras registradas.</div> }
+    @else {
+      <div class="lista-compras">
+        @for (compra of compras(); track compra.id) {
+          <article class="compra">
+            <div class="compra-principal">
+              <img [src]="compra.pelicula.url_poster" [alt]="compra.pelicula.titulo" />
+              <div><span class="estado" [class.cancelada]="compra.estado === 'cancelada'">{{ compra.estado }}</span><h3>{{ compra.pelicula.titulo }}</h3><p>{{ formatearFecha(compra.funcion.fecha) }} · {{ compra.funcion.hora_inicio }} · Sala {{ compra.funcion.sala_id }}</p><small>Asientos: @for (asiento of compra.asientos; track asiento.id) { {{ asiento.fila }}{{ asiento.numero }}@if (!$last) {,} }</small></div>
+            </div>
+            <div class="compra-final"><strong>${{ formatearDinero(compra.total) }}</strong><small>Compra #{{ compra.id }}</small>@if (puedeCancelar(compra)) {<button type="button" (click)="cancelarCompra(compra)">Cancelar</button>} @else if (compra.estado === 'pagada') {<small>Cancelación no disponible</small>}</div>
+          </article>
+        }
+      </div>
+    }
+  </section>
+</section>

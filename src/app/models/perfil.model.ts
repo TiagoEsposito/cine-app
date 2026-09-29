@@ -9,12 +9,24 @@ export interface Perfil {
   tipo_sangre: string | null;
   color_ojos: string | null;
   dias_vacaciones: number | null;
+  puntos: number;
+  credito: number;
   rol: Rol;
+  fecha_creacion?: string;
 }
 
 export interface DatosRegistro {
   email: string;
   password: string;
+  nombre: string;
+  apellido: string;
+  fecha_nacimiento: string;
+  tipo_sangre: string;
+  color_ojos: string;
+  dias_vacaciones: number;
+}
+
+export interface DatosPerfilEditable {
   nombre: string;
   apellido: string;
   fecha_nacimiento: string;

@@ -10,7 +10,12 @@
 
     <nav aria-label="Navegación principal">
       <a routerLink="/cartelera" routerLinkActive="activo">Cartelera</a>
-      <a routerLink="/registro" routerLinkActive="activo">Crear cuenta</a>
+      @if (auth.haIniciadoSesion()) {
+        <a routerLink="/mis-peliculas" routerLinkActive="activo">Mis películas</a>
+        <a routerLink="/perfil" routerLinkActive="activo">Mi cuenta</a>
+      } @else {
+        <a routerLink="/registro" routerLinkActive="activo">Crear cuenta</a>
+      }
     </nav>
   </div>
 </header>

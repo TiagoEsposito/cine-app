@@ -36,42 +36,30 @@ export class AsientosService {
 
   async crearVenta(
     funcionId: number,
-    usuarioId: string | null,
+    _usuarioId: string | null,
     asientoIds: number[],
-    total: number
-  ): Promise<{ id: number; codigoQr: string }> {
-    const codigoQr = crypto.randomUUID();
+    _total: number
+  ): Promise<{ id: number; codigoQr: string; total: number }> {
+    const { data, error } = await this.supabase.cliente.rpc(
+      'crear_venta_con_asientos',
+      {
+        p_funcion_id: funcionId,
+        p_asiento_ids: asientoIds,
+      }
+    );
 
-    const { data: venta, error: errorVenta } =
-      await this.supabase.cliente
-        .from('ventas')
-        .insert({
-          funcion_id: funcionId,
-          usuario_id: usuarioId,
-          total,
-          estado: 'pagada',
-          codigo_qr: codigoQr,
-        })
-        .select('id, codigo_qr')
-        .single();
+    if (error) throw error;
 
-    if (errorVenta) throw errorVenta;
+    const venta = Array.isArray(data) ? data[0] : data;
 
-    const registros = asientoIds.map((asientoId) => ({
-      venta_id: venta.id,
-      asiento_id: asientoId,
-    }));
-
-    const { error: errorAsientos } =
-      await this.supabase.cliente
-        .from('venta_asientos')
-        .insert(registros);
-
-    if (errorAsientos) throw errorAsientos;
+    if (!venta) {
+      throw new Error('No se pudo crear la venta.');
+    }
 
     return {
-      id: venta.id,
+      id: Number(venta.venta_id),
       codigoQr: venta.codigo_qr,
+      total: Number(venta.total),
     };
   }
 }

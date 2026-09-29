@@ -9,10 +9,7 @@
     <article class="pelicula-detalle">
       <div class="poster-columna">
         @if (pelicula()!.url_poster) {
-          <img
-            [src]="pelicula()!.url_poster"
-            [alt]="'Póster de ' + pelicula()!.titulo"
-          />
+          <img [src]="pelicula()!.url_poster" [alt]="'Póster de ' + pelicula()!.titulo" />
         }
         <span class="edad">+{{ pelicula()!.edad_minima }}</span>
       </div>
@@ -46,7 +43,89 @@
           </div>
         }
 
-        <div class="funciones">
+        <section class="resenas">
+          <div class="seccion-cabecera">
+            <div>
+              <span>Opiniones</span>
+              <h2>¿Qué dice la gente?</h2>
+            </div>
+            @if (resenas().length) {
+              <div class="rating-general">
+                <strong>★ {{ promedio().toFixed(1) }}</strong>
+                <small>{{ resenas().length }} reseña{{ resenas().length === 1 ? '' : 's' }}</small>
+              </div>
+            }
+          </div>
+
+          @if (resenas().length) {
+            <div class="lista-resenas">
+              @for (resena of resenas(); track resena.id) {
+                <article class="resena">
+                  <div class="resena-cabecera">
+                    <div>
+                      <strong>{{ resena.usuario?.nombre }} {{ resena.usuario?.apellido }}</strong>
+                      <small>{{ resena.fecha_creacion | slice:0:10 }}</small>
+                    </div>
+                    <span class="estrellas">{{ '★'.repeat(resena.puntuacion) }}{{ '☆'.repeat(5 - resena.puntuacion) }}</span>
+                  </div>
+                  <p>{{ resena.comentario }}</p>
+                </article>
+              }
+            </div>
+          } @else {
+            <div class="sin-resenas">Todavía no hay reseñas. Sé el primero en opinar.</div>
+          }
+
+          @if (auth.haIniciadoSesion()) {
+            @if (miResena()) {
+              <div class="ya-reseno">✓ Ya dejaste tu reseña para esta película.</div>
+            } @else {
+              <div class="form-resena">
+                <div>
+                  <span class="form-label">Tu puntuación</span>
+                  <div class="selector-estrellas" aria-label="Seleccionar puntuación">
+                    @for (estrella of [1, 2, 3, 4, 5]; track estrella) {
+                      <button
+                        type="button"
+                        [class.seleccionada]="estrella <= puntuacionSeleccionada()"
+                        [attr.aria-label]="estrella + ' estrellas'"
+                        (click)="seleccionarPuntuacion(estrella)"
+                      >★</button>
+                    }
+                  </div>
+                </div>
+
+                <textarea
+                  rows="3"
+                  maxlength="280"
+                  placeholder="Contá brevemente qué te pareció..."
+                  [value]="comentarioResena()"
+                  (input)="comentarioResena.set($any($event.target).value)"
+                ></textarea>
+
+                @if (errorResena()) {
+                  <p class="error-resena">{{ errorResena() }}</p>
+                }
+
+                <button
+                  type="button"
+                  class="boton-resena"
+                  [disabled]="publicandoResena()"
+                  (click)="publicarResena()"
+                >
+                  {{ publicandoResena() ? 'Publicando...' : 'Publicar reseña' }}
+                </button>
+              </div>
+            }
+          } @else {
+            <div class="iniciar-resena">
+              <span>¿Ya viste la película?</span>
+              <a routerLink="/registro">Creá tu cuenta para dejar una reseña.</a>
+            </div>
+          }
+        </section>
+
+        <section class="funciones">
           <div class="seccion-cabecera">
             <div>
               <span>Horarios</span>
@@ -63,24 +142,16 @@
                     <span>{{ funcion.fecha }}</span>
                     <strong>{{ funcion.hora_inicio }}</strong>
                   </div>
-                  <div class="sala">
-                    <span>Sala</span>
-                    <strong>{{ funcion.sala_id }}</strong>
-                  </div>
-                  <div class="precio">
-                    <span>Desde</span>
-                    <strong>${{ funcion.precio }}</strong>
-                  </div>
-                  <a [routerLink]="['/funcion', funcion.id]" class="boton-funcion">
-                    Elegir
-                  </a>
+                  <div class="sala"><span>Sala</span><strong>{{ funcion.sala_id }}</strong></div>
+                  <div class="precio"><span>Desde</span><strong>${{ funcion.precio }}</strong></div>
+                  <a [routerLink]="['/funcion', funcion.id]" class="boton-funcion">Elegir</a>
                 </div>
               }
             </div>
           } @else {
             <div class="sin-funciones">No hay funciones disponibles.</div>
           }
-        </div>
+        </section>
       </div>
     </article>
   }

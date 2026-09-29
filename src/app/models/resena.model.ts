@@ -5,4 +5,8 @@ export interface Resena {
   puntuacion: number;
   comentario: string;
   fecha_creacion: string;
+  usuario?: {
+    nombre: string;
+    apellido: string;
+  } | null;
 }

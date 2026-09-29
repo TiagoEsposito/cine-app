@@ -1,7 +1,7 @@
 import { computed, inject, Injectable, signal } from '@angular/core';
 import { Session } from '@supabase/supabase-js';
 import { SupabaseService } from './supabase.service';
-import { DatosRegistro, Perfil } from '../models/perfil.model';
+import { DatosPerfilEditable, DatosRegistro, Perfil } from '../models/perfil.model';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
@@ -63,6 +63,38 @@ export class AuthService {
 
     await this.cargarPerfil(data.user.id);
     return null;
+  }
+
+
+  async actualizarPerfil(datos: DatosPerfilEditable): Promise<string | null> {
+    const usuarioId = this.sesion()?.user.id;
+
+    if (!usuarioId) {
+      return 'No hay una sesión activa.';
+    }
+
+    const { error } = await this.supabase.cliente.rpc('actualizar_perfil', {
+      p_nombre: datos.nombre,
+      p_apellido: datos.apellido,
+      p_fecha_nacimiento: datos.fecha_nacimiento,
+      p_tipo_sangre: datos.tipo_sangre,
+      p_color_ojos: datos.color_ojos,
+      p_dias_vacaciones: datos.dias_vacaciones,
+    });
+
+    if (error) {
+      return error.message;
+    }
+
+    await this.cargarPerfil(usuarioId);
+    return null;
+  }
+
+  async recargarPerfil(): Promise<void> {
+    const usuarioId = this.sesion()?.user.id;
+    if (usuarioId) {
+      await this.cargarPerfil(usuarioId);
+    }
   }
 
   async cerrarSesion(): Promise<void> {
