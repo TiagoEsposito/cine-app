@@ -1,0 +1,99 @@
+.cartelera {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.encabezado h1 {
+  margin: 0.25rem 0;
+}
+
+.encabezado p {
+  margin: 0;
+  color: #6b7280;
+}
+
+.etiqueta {
+  color: #2563eb !important;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.peliculas {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 1.5rem;
+}
+
+.pelicula {
+  overflow: hidden;
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  background: #ffffff;
+  box-shadow: 0 8px 24px rgb(0 0 0 / 6%);
+}
+
+.pelicula img,
+.poster-vacio {
+  display: block;
+  width: 100%;
+  aspect-ratio: 2 / 3;
+  object-fit: cover;
+}
+
+.poster-vacio {
+  display: grid;
+  place-items: center;
+  background: #f3f4f6;
+  color: #6b7280;
+}
+
+.informacion {
+  padding: 1rem;
+}
+
+.informacion h2 {
+  margin: 0 0 0.35rem;
+}
+
+.informacion p {
+  color: #4b5563;
+  line-height: 1.5;
+}
+
+.datos {
+  margin: 0 0 0.75rem;
+  font-size: 0.9rem;
+}
+
+.generos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin: 0 0 0.75rem;
+  padding: 0;
+  list-style: none;
+}
+
+.generos li {
+  padding: 0.25rem 0.5rem;
+  border-radius: 999px;
+  background: #f3f4f6;
+  font-size: 0.8rem;
+}
+
+.estado {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  padding: 1rem;
+  border-radius: 10px;
+  background: #f3f4f6;
+}
+
+.estado.error {
+  color: #991b1b;
+  background: #fef2f2;
+}

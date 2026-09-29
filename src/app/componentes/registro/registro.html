@@ -1,0 +1,135 @@
+<section class="registro">
+  <h1>Crear cuenta</h1>
+  <p>Registrate y llevate un cupón de descuento en tu primera compra.</p>
+
+  <ng-template #errores let-campo="campo">
+    @if (campo().touched() && campo().invalid()) {
+      <ul class="errores">
+        @for (error of campo().errors(); track error) {
+          <li>{{ error.message }}</li>
+        }
+      </ul>
+    }
+  </ng-template>
+
+  <form [formRoot]="formulario">
+    <label>
+      Nombre
+      <input [formField]="formulario.nombre" autocomplete="given-name" />
+    </label>
+    <ng-container
+      [ngTemplateOutlet]="errores"
+      [ngTemplateOutletContext]="{ campo: formulario.nombre }"
+    ></ng-container>
+
+    <label>
+      Apellido
+      <input [formField]="formulario.apellido" autocomplete="family-name" />
+    </label>
+    <ng-container
+      [ngTemplateOutlet]="errores"
+      [ngTemplateOutletContext]="{ campo: formulario.apellido }"
+    ></ng-container>
+
+    <label>
+      Email
+      <input type="email" [formField]="formulario.email" autocomplete="email" />
+    </label>
+    <ng-container
+      [ngTemplateOutlet]="errores"
+      [ngTemplateOutletContext]="{ campo: formulario.email }"
+    ></ng-container>
+
+    <label>
+      Contraseña
+      <input
+        type="password"
+        [formField]="formulario.password"
+        autocomplete="new-password"
+      />
+    </label>
+    <ng-container
+      [ngTemplateOutlet]="errores"
+      [ngTemplateOutletContext]="{ campo: formulario.password }"
+    ></ng-container>
+
+    <fieldset>
+      <legend>Fecha de nacimiento</legend>
+      <div class="fila">
+        <label>
+          Día
+          <input [formField]="formulario.dia" inputmode="numeric" placeholder="DD" />
+        </label>
+        <label>
+          Mes
+          <input [formField]="formulario.mes" inputmode="numeric" placeholder="MM" />
+        </label>
+        <label>
+          Año
+          <input [formField]="formulario.anio" inputmode="numeric" placeholder="AAAA" />
+        </label>
+      </div>
+      <ng-container
+        [ngTemplateOutlet]="errores"
+        [ngTemplateOutletContext]="{ campo: formulario.dia }"
+      ></ng-container>
+      <ng-container
+        [ngTemplateOutlet]="errores"
+        [ngTemplateOutletContext]="{ campo: formulario.mes }"
+      ></ng-container>
+      <ng-container
+        [ngTemplateOutlet]="errores"
+        [ngTemplateOutletContext]="{ campo: formulario.anio }"
+      ></ng-container>
+    </fieldset>
+
+    <label>
+      Tipo de sangre
+      <select [formField]="formulario.tipo_sangre">
+        <option value="">Elegí una opción</option>
+        @for (tipo of tiposSangre; track tipo) {
+          <option [value]="tipo">{{ tipo }}</option>
+        }
+      </select>
+    </label>
+    <ng-container
+      [ngTemplateOutlet]="errores"
+      [ngTemplateOutletContext]="{ campo: formulario.tipo_sangre }"
+    ></ng-container>
+
+    <label>
+      Color de ojos
+      <select [formField]="formulario.color_ojos">
+        <option value="">Elegí una opción</option>
+        @for (color of coloresOjos; track color) {
+          <option [value]="color">{{ color }}</option>
+        }
+      </select>
+    </label>
+    <ng-container
+      [ngTemplateOutlet]="errores"
+      [ngTemplateOutletContext]="{ campo: formulario.color_ojos }"
+    ></ng-container>
+
+    <label>
+      Días de vacaciones por año
+      <input [formField]="formulario.dias_vacaciones" inputmode="numeric" />
+    </label>
+    <ng-container
+      [ngTemplateOutlet]="errores"
+      [ngTemplateOutletContext]="{ campo: formulario.dias_vacaciones }"
+    ></ng-container>
+
+    @if (formulario().errors().length > 0) {
+      <p class="error-general">{{ formulario().errors()[0].message }}</p>
+    }
+
+    <button type="submit" [disabled]="formulario().submitting()">
+      @if (formulario().submitting()) {
+        Creando cuenta...
+      } @else {
+        Crear cuenta
+      }
+    </button>
+  </form>
+</section>

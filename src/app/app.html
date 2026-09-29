@@ -1,19 +1,12 @@
-<h1>Cartelera</h1>
+<header class="barra">
+  <a routerLink="/cartelera" class="marca">Cine</a>
 
-@if (error()) {
-  <p>{{ error() }}</p>
-}
+  <nav aria-label="Navegación principal">
+    <a routerLink="/cartelera" routerLinkActive="activo">Cartelera</a>
+    <a routerLink="/registro" routerLinkActive="activo">Registrarse</a>
+  </nav>
+</header>
 
-@for (pelicula of peliculas(); track pelicula.id) {
-  <article>
-    <h2>{{ pelicula.titulo }}</h2>
-    <p>{{ pelicula.duracion_minutos }} min · +{{ pelicula.edad_minima }}</p>
-    <ul>
-      @for (genero of pelicula.generos; track genero.id) {
-        <li>{{ genero.nombre }}</li>
-      }
-    </ul>
-  </article>
-} @empty {
-  <p>No hay películas para mostrar.</p>
-}
+<main class="contenido">
+  <router-outlet />
+</main>

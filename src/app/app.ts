@@ -1,22 +1,10 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
-import { Pelicula, PeliculasService } from './peliculas/peliculas.service';
+import { Component } from '@angular/core';
+import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 
 @Component({
   selector: 'app-root',
+  imports: [RouterLink, RouterLinkActive, RouterOutlet],
   templateUrl: './app.html',
-  styleUrl: './app.scss',
+  styleUrl: './app.css',
 })
-export class App implements OnInit {
-  private peliculasService = inject(PeliculasService);
-
-  peliculas = signal<Pelicula[]>([]);
-  error = signal<string | null>(null);
-
-  async ngOnInit() {
-    try {
-      this.peliculas.set(await this.peliculasService.obtenerPeliculas());
-    } catch (e: any) {
-      this.error.set(e.message ?? 'Error al cargar las películas');
-    }
-  }
-}
+export class App {}

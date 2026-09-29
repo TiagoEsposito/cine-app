@@ -1,0 +1,55 @@
+<section class="cartelera">
+  <div class="encabezado">
+    <div>
+      <p class="etiqueta">Cine</p>
+      <h1>Cartelera</h1>
+      <p>Películas disponibles actualmente.</p>
+    </div>
+  </div>
+
+  @if (cargando()) {
+    <p class="estado">Cargando películas...</p>
+  } @else if (error()) {
+    <div class="estado error" role="alert">
+      <strong>No pudimos cargar la cartelera.</strong>
+      <span>{{ error() }}</span>
+    </div>
+  } @else if (peliculas().length === 0) {
+    <p class="estado">No hay películas para mostrar.</p>
+  } @else {
+    <div class="peliculas">
+      @for (pelicula of peliculas(); track pelicula.id) {
+        <article class="pelicula">
+          @if (pelicula.url_poster) {
+            <img
+              [src]="pelicula.url_poster"
+              [alt]="'Póster de ' + pelicula.titulo"
+              loading="lazy"
+            />
+          } @else {
+            <div class="poster-vacio" aria-hidden="true">Sin póster</div>
+          }
+
+          <div class="informacion">
+            <h2>{{ pelicula.titulo }}</h2>
+            <p class="datos">
+              {{ pelicula.duracion_minutos }} min · +{{ pelicula.edad_minima }}
+            </p>
+
+            @if (pelicula.generos?.length) {
+              <ul class="generos">
+                @for (genero of pelicula.generos; track genero.id) {
+                  <li>{{ genero.nombre }}</li>
+                }
+              </ul>
+            }
+
+            @if (pelicula.sinopsis) {
+              <p>{{ pelicula.sinopsis }}</p>
+            }
+          </div>
+        </article>
+      }
+    </div>
+  }
+</section>

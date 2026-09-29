@@ -1,0 +1,38 @@
+.barra {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem 2rem;
+  border-bottom: 1px solid #e5e7eb;
+  background: #ffffff;
+}
+
+.marca {
+  color: #111827;
+  font-size: 1.5rem;
+  font-weight: 800;
+  text-decoration: none;
+}
+
+nav {
+  display: flex;
+  gap: 1rem;
+}
+
+nav a {
+  color: #4b5563;
+  text-decoration: none;
+}
+
+nav a:hover,
+nav a.activo {
+  color: #111827;
+  font-weight: 600;
+}
+
+.contenido {
+  width: min(1100px, calc(100% - 2rem));
+  margin: 0 auto;
+  padding: 2rem 0;
+}
