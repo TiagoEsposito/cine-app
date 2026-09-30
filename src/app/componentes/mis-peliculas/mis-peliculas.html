@@ -30,6 +30,19 @@
             <h2>{{ compra.pelicula.titulo }}</h2>
             <p class="funcion">{{ formatearFecha(compra.funcion.fecha) }} · {{ compra.funcion.hora_inicio }} · Sala {{ compra.funcion.sala_id }}</p>
             <p class="asientos">Asientos {{ obtenerAsientos(compra) }}</p>
+
+            <div class="calificacion">
+              @if (misPuntuaciones().has(compra.pelicula.id)) {
+                <span>Tu calificación</span>
+                <strong>
+                  {{ '★'.repeat(misPuntuaciones().get(compra.pelicula.id) ?? 0) }}
+                  {{ '☆'.repeat(5 - (misPuntuaciones().get(compra.pelicula.id) ?? 0)) }}
+                </strong>
+              } @else {
+                <span>Aún no calificaste esta película</span>
+              }
+            </div>
+
             <div class="pie-card">
               <strong>${{ compra.total }}</strong>
               <a [routerLink]="['/pelicula', compra.pelicula.id]">Ver película →</a>

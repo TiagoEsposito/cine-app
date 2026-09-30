@@ -313,6 +313,12 @@
                 Compra #{{ compra.id }}
               </small>
 
+              @if (compra.estado === 'cancelada' && compra.credito_generado > 0) {
+                <small class="credito-compra">
+                  + ${{ formatearDinero(compra.credito_generado) }} de crédito
+                </small>
+              }
+
               @if (puedeCancelar(compra)) {
                 <button
                   type="button"

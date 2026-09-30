@@ -50,6 +50,21 @@ export class PeliculasService {
     }));
   }
 
+
+  async obtenerResenasDelUsuario(usuarioId: string): Promise<{ pelicula_id: number; puntuacion: number }[]> {
+    const { data, error } = await this.supabase.cliente
+      .from('reseñas')
+      .select('pelicula_id, puntuacion')
+      .eq('usuario_id', usuarioId);
+
+    if (error) throw error;
+
+    return (data ?? []).map((resena: any) => ({
+      pelicula_id: Number(resena.pelicula_id),
+      puntuacion: Number(resena.puntuacion),
+    }));
+  }
+
   async obtenerResenaDelUsuario(
     peliculaId: number,
     usuarioId: string

@@ -2,6 +2,7 @@ import { Component, inject, OnInit, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { AuthService } from '../../servicios/auth.service';
 import { ComprasService } from '../../servicios/compras.service';
+import { PeliculasService } from '../../servicios/peliculas.service';
 import { CompraHistorial } from '../../models/compra.model';
 
 @Component({
@@ -13,10 +14,12 @@ import { CompraHistorial } from '../../models/compra.model';
 export class MisPeliculas implements OnInit {
   readonly auth = inject(AuthService);
   private readonly comprasService = inject(ComprasService);
+  private readonly peliculasService = inject(PeliculasService);
 
   readonly compras = signal<CompraHistorial[]>([]);
   readonly cargando = signal(true);
   readonly error = signal<string | null>(null);
+  readonly misPuntuaciones = signal<Map<number, number>>(new Map());
 
   async ngOnInit(): Promise<void> {
     await this.auth.listo;
@@ -28,8 +31,16 @@ export class MisPeliculas implements OnInit {
     }
 
     try {
-      const historial = await this.comprasService.obtenerHistorial(usuarioId);
+      const [historial, resenas] = await Promise.all([
+        this.comprasService.obtenerHistorial(usuarioId),
+        this.peliculasService.obtenerResenasDelUsuario(usuarioId),
+      ]);
+
       this.compras.set(historial.filter((compra) => compra.estado === 'pagada'));
+
+      this.misPuntuaciones.set(
+        new Map(resenas.map((resena) => [resena.pelicula_id, resena.puntuacion]))
+      );
     } catch (error: unknown) {
       this.error.set(error instanceof Error ? error.message : 'No se pudo cargar tus películas.');
     } finally {

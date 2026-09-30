@@ -21,3 +21,5 @@ dl { display:grid; grid-template-columns:1fr 1fr; margin:0; }.datos-cuenta dl di
 @media (max-width:600px) { .encabezado-perfil { align-items:flex-start; }.avatar { width:48px;height:48px; }.formulario-perfil,dl { grid-template-columns:1fr; }.compra { flex-direction:column; }.compra-final { align-items:flex-start; }.compra-final button { align-self:flex-start; } }
 .salir { border:0; background:transparent; color:#8b3030; border-radius:8px; padding:.55rem .7rem; font-size:.72rem; font-weight:800; cursor:pointer; }
 .salir:hover { background:#fff0ee; }
+
+.credito-compra{color:#48664e!important;font-weight:800}
