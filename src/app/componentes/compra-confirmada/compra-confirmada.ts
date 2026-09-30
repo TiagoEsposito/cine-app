@@ -21,11 +21,5 @@ export class CompraConfirmada {
       : precioBase;
   }
 
-  obtenerTotal(): number {
-    return this.compra.asientos().reduce(
-      (total, asiento) =>
-        total + this.obtenerPrecioAsiento(asiento),
-      0
-    );
-  }
+  obtenerTotal(): number { return this.compra.venta()?.total ?? 0; }
 }

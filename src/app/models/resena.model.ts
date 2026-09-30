@@ -8,5 +8,5 @@ export interface Resena {
   usuario?: {
     nombre: string;
     apellido: string;
-  } | null;
+  };
 }

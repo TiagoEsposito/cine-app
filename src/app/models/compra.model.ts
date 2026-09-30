@@ -15,4 +15,5 @@ export interface CompraHistorial {
   funcion: Funcion;
   pelicula: Pelicula;
   asientos: Asiento[];
+  productos?: { producto_id: number; nombre: string; cantidad: number; precio_unitario: number; subtotal: number }[];
 }

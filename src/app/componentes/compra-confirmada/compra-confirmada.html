@@ -68,6 +68,11 @@
           }
         </p>
 
+        @if (compra.candy().length) {
+          <h2>Candy Bar</h2>
+          <p>@for (item of compra.candy(); track item.id) { {{ item.cantidad }} × {{ item.nombre }} @if (!$last) {, } }</p>
+        }
+
         <div class="total">
           <span>Total</span>
 

@@ -1,0 +1,12 @@
+export interface CandyCategoria { id: number; nombre: string; activa: boolean; }
+export interface CandyProducto {
+  id: number;
+  categoria_id: number;
+  nombre: string;
+  descripcion: string | null;
+  precio: number;
+  imagen_url: string | null;
+  stock: number;
+  activo: boolean;
+}
+export interface CandyItem extends CandyProducto { cantidad: number; }

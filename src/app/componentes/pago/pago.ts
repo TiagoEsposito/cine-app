@@ -26,10 +26,8 @@ export class Pago {
   }
 
   obtenerTotal(): number {
-    return this.compra.asientos().reduce(
-      (total, asiento) => total + this.obtenerPrecioAsiento(asiento),
-      0
-    );
+    const entradas = this.compra.asientos().reduce((total, asiento) => total + this.obtenerPrecioAsiento(asiento), 0);
+    return entradas + this.compra.totalCandy();
   }
 
   async pagar(): Promise<void> {
@@ -56,7 +54,8 @@ export class Pago {
         funcion.id,
         usuarioId,
         asientoIds,
-        this.obtenerTotal()
+        this.obtenerTotal(),
+        this.compra.candy()
       );
 
       this.compra.guardarVenta(venta);

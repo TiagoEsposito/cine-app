@@ -46,12 +46,12 @@ export class ComprasService {
         venta_asientos (
           asiento_id,
           asientos (
-            id,
-            sala_id,
-            fila,
-            numero,
-            tipo
+            id, sala_id, fila, numero, tipo
           )
+        ),
+        venta_productos (
+          producto_id, cantidad, precio_unitario, subtotal,
+          candy_productos (id, nombre)
         )
       `)
       .eq('usuario_id', usuarioId)
@@ -66,6 +66,14 @@ export class ComprasService {
         .map((item: any) => item.asientos as Asiento)
         .filter(Boolean);
 
+      const productos = (venta.venta_productos ?? []).map((item: any) => ({
+        producto_id: Number(item.producto_id),
+        nombre: item.candy_productos?.nombre ?? 'Producto',
+        cantidad: Number(item.cantidad),
+        precio_unitario: Number(item.precio_unitario),
+        subtotal: Number(item.subtotal),
+      }));
+
       return {
         id: venta.id,
         funcion_id: venta.funcion_id,
@@ -79,6 +87,7 @@ export class ComprasService {
         funcion,
         pelicula,
         asientos,
+        productos,
       } as CompraHistorial;
     });
   }
