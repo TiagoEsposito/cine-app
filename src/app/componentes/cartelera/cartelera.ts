@@ -6,6 +6,7 @@ import { AuthService } from '../../servicios/auth.service';
 import { Funcion } from '../../models/funcion.model';
 import { FuncionesService } from '../../servicios/funciones.service';
 import { RouterLink } from '@angular/router';
+import { BeneficiosService } from '../../servicios/beneficios.service';
 
 @Component({
   selector: 'app-cartelera',
@@ -16,6 +17,7 @@ import { RouterLink } from '@angular/router';
 export class Cartelera implements OnInit {
   private readonly peliculasService = inject(PeliculasService);
   private readonly funcionesService = inject(FuncionesService);
+  private readonly beneficios = inject(BeneficiosService);
   readonly auth = inject(AuthService);
 
   readonly peliculas = signal<Pelicula[]>([]);
@@ -33,6 +35,18 @@ export class Cartelera implements OnInit {
   readonly comentarioResena = signal('');
   readonly publicandoResena = signal(false);
   readonly errorResena = signal<string | null>(null);
+  readonly proximamente = signal<Pelicula[]>([]);
+
+  async activarAlerta(pelicula: Pelicula): Promise<void> {
+    const usuario = this.auth.perfil();
+    if (!usuario) { this.error.set('Iniciá sesión para activar una alerta.'); return; }
+    try {
+      await this.beneficios.activarAlerta(usuario.id, pelicula.id);
+      if ('Notification' in window && Notification.permission === 'default') await Notification.requestPermission();
+      if ('Notification' in window && Notification.permission === 'granted') new Notification('Cine Avellaneda', { body: `Te avisaremos cuando ${pelicula.titulo} esté disponible.` });
+      this.error.set(null);
+    } catch (e) { this.error.set(e instanceof Error ? e.message : 'No se pudo activar la alerta.'); }
+  }
 
   readonly peliculasFiltradas = computed(() => {
     const texto = this.busqueda().trim().toLowerCase();
@@ -58,6 +72,7 @@ export class Cartelera implements OnInit {
       ]);
 
       this.peliculas.set(peliculas);
+      this.proximamente.set(peliculas.filter(p => p.fecha_estreno && new Date(`${p.fecha_estreno}T00:00:00`) > new Date()));
       this.generos.set(generos);
 
       const resenasPorPelicula = await Promise.all(

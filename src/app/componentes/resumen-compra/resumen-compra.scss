@@ -116,3 +116,22 @@
 .carrito div { display:flex; justify-content:space-between; padding:7px 0; border-bottom:1px solid #303139; }
 @media (max-width: 700px) { .productos-candy { grid-template-columns:1fr; } .candy-cabecera { align-items:flex-start; flex-direction:column; } }
 .categorias-candy{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}.categorias-candy button{border:1px solid #ddd4c7;background:#fff;border-radius:999px;padding:8px 13px;cursor:pointer}.categorias-candy button.activa{background:#17181d;color:#fff;border-color:#17181d}
+
+
+.carrito-accion {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.carrito-accion button {
+  border: 1px solid #d9d4ca;
+  background: #fffdf9;
+  border-radius: 8px;
+  padding: 7px 10px;
+  cursor: pointer;
+}
+
+.carrito-accion button:hover {
+  background: #f0ece4;
+}

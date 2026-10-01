@@ -11,6 +11,10 @@
     </div>
   </div>
 
+  @if (proximamente().length) {
+    <section class="proximamente" style="margin:30px 0"><div class="seccion-titulo"><div><span>PRÓXIMAMENTE</span><h2>Próximos estrenos</h2></div></div><div class="peliculas">@for (pelicula of proximamente(); track pelicula.id) {<article class="pelicula"><div class="poster-wrap">@if (pelicula.url_poster) {<img [src]="pelicula.url_poster" [alt]="pelicula.titulo" loading="lazy" />}</div><div class="informacion"><div class="titulo-linea"><h2>{{pelicula.titulo}}</h2></div><p class="datos">Estreno: {{pelicula.fecha_estreno}}</p><p class="sinopsis">{{pelicula.sinopsis}}</p><button type="button" class="boton" (click)="activarAlerta(pelicula)">🔔 Avisarme cuando esté disponible</button></div></article>}</div></section>
+  }
+
   <div class="filtros">
     <div class="buscador">
       <label for="buscar-pelicula">Buscar película</label>

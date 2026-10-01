@@ -93,13 +93,85 @@ export class ComprasService {
   }
 
   async cancelarCompra(ventaId: number): Promise<number> {
-    const { data, error } = await this.supabase.cliente.rpc('cancelar_venta', {
-      p_venta_id: ventaId,
-    });
+    const usuario = (await this.supabase.cliente.auth.getUser()).data.user;
+    if (!usuario) throw new Error('Iniciá sesión para cancelar una compra.');
 
+    const { data: compra, error } = await this.supabase.cliente
+      .from('ventas')
+      .select('id, usuario_id, total, estado, funcion_id')
+      .eq('id', ventaId)
+      .eq('usuario_id', usuario.id)
+      .single();
     if (error) throw error;
+    if (compra.estado !== 'pagada') throw new Error('La compra ya fue cancelada.');
 
-    return Number(data ?? 0);
+    const { data: funcion, error: funcionError } = await this.supabase.cliente
+      .from('funciones')
+      .select('fecha,hora_inicio')
+      .eq('id', compra.funcion_id)
+      .single();
+    if (funcionError) throw funcionError;
+
+    const inicio = new Date(`${funcion.fecha}T${funcion.hora_inicio}`);
+    if (Date.now() >= inicio.getTime() - 2 * 60 * 60 * 1000) {
+      throw new Error('Solo podés cancelar la compra hasta 2 horas antes de la función.');
+    }
+
+    const credito = Number(compra.total);
+
+    const { data: productos, error: productosError } = await this.supabase.cliente
+      .from('venta_productos')
+      .select('producto_id,cantidad')
+      .eq('venta_id', ventaId);
+    if (productosError) throw productosError;
+
+    for (const producto of productos ?? []) {
+      const { data: actual, error: stockError } = await this.supabase.cliente
+        .from('candy_productos')
+        .select('stock')
+        .eq('id', producto.producto_id)
+        .single();
+      if (stockError) throw stockError;
+
+      const { error: updateStockError } = await this.supabase.cliente
+        .from('candy_productos')
+        .update({ stock: Number(actual.stock) + Number(producto.cantidad) })
+        .eq('id', producto.producto_id);
+      if (updateStockError) throw updateStockError;
+    }
+
+    const { error: ventaError } = await this.supabase.cliente
+      .from('ventas')
+      .update({
+        estado: 'cancelada',
+        fecha_cancelacion: new Date().toISOString(),
+        credito_generado: credito,
+      })
+      .eq('id', ventaId)
+      .eq('usuario_id', usuario.id)
+      .eq('estado', 'pagada');
+    if (ventaError) throw ventaError;
+
+    const { error: asientosError } = await this.supabase.cliente
+      .from('venta_asientos')
+      .update({ activo: false })
+      .eq('venta_id', ventaId);
+    if (asientosError) throw asientosError;
+
+    const { data: perfil, error: perfilError } = await this.supabase.cliente
+      .from('perfiles')
+      .select('credito')
+      .eq('id', usuario.id)
+      .single();
+    if (perfilError) throw perfilError;
+
+    const { error: creditoError } = await this.supabase.cliente
+      .from('perfiles')
+      .update({ credito: Number(perfil.credito ?? 0) + credito })
+      .eq('id', usuario.id);
+    if (creditoError) throw creditoError;
+
+    return credito;
   }
 
   puedeCancelar(compra: CompraHistorial): boolean {

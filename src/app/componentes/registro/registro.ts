@@ -77,7 +77,7 @@ export class Registro {
     },
     {
       submission: {
-        action: async (campo) => {
+        action: (async (campo: any) => {
           const valores = this.modelo();
 
           const fecha = this.armarFecha(valores.dia, valores.mes, valores.anio);
@@ -115,7 +115,7 @@ export class Registro {
 
           await this.router.navigate(['/cartelera']);
           return undefined;
-        },
+        }) as any,
       },
     },
   );

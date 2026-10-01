@@ -7,4 +7,5 @@ export interface Funcion {
   hora_fin: string;
   precio: number;
   fecha_creacion: string;
+  es_preventa?: boolean;
 }

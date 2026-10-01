@@ -12,5 +12,7 @@ export interface Pelicula {
   edad_minima: number;
   fecha_estreno: string | null;
   activa: boolean;
+  preventa_activa?: boolean;
+  precio_preventa?: number | null;
   generos: Genero[];
 }

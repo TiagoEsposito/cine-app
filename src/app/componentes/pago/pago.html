@@ -1,65 +1,14 @@
 <section class="pago">
   @if (!compra.tieneSeleccion()) {
-    <div class="estado">
-      <h1>No hay una compra en curso</h1>
-      <a routerLink="/cartelera" class="boton">Volver a cartelera</a>
-    </div>
+    <div class="estado"><h1>No hay una compra en curso</h1><a routerLink="/cartelera" class="boton">Volver a cartelera</a></div>
   } @else {
-    <div class="encabezado">
-      <a
-        [routerLink]="['/funcion', compra.funcion()!.id, 'resumen']"
-        class="volver"
-      >
-        ← Volver al resumen
-      </a>
-      <p class="etiqueta">Pago</p>
-      <h1>Finalizá tu compra</h1>
-      <p>Esta pantalla simula el proceso de pago para el TP.</p>
-    </div>
-
+    <div class="encabezado"><a [routerLink]="['/funcion', compra.funcion()!.id, 'resumen']" class="volver">← Volver al resumen</a><p class="etiqueta">Pago</p><h1>Finalizá tu compra</h1><p>Podés aplicar un cupón antes de pagar.</p></div>
     <div class="contenido">
-      <div class="metodo">
-        <h2>Tarjeta</h2>
-        <label>
-          Nombre del titular
-          <input type="text" name="nombreTitular" autocomplete="cc-name" placeholder="Nombre y apellido" />
-        </label>
-
-        <label>
-          Número de tarjeta
-          <input type="text" name="numeroTarjeta" inputmode="numeric" autocomplete="cc-number" placeholder="0000 0000 0000 0000" />
-        </label>
-
-        <div class="fila-pago">
-          <label>
-            Vencimiento
-            <input type="text" name="vencimiento" autocomplete="cc-exp" placeholder="MM/AA" />
-          </label>
-
-          <label>
-            CVV
-            <input type="password" name="cvv" inputmode="numeric" autocomplete="cc-csc" placeholder="123" />
-          </label>
-        </div>
-      </div>
-
-      <div class="total">
-        <span>Total</span>
-        <strong>${{ obtenerTotal() }}</strong>
-      </div>
-
-      @if (error()) {
-        <p class="error">{{ error() }}</p>
-      }
-
-      <button
-        type="button"
-        class="boton pagar"
-        [disabled]="procesando()"
-        (click)="pagar()"
-      >
-        {{ procesando() ? 'Procesando...' : 'Pagar $' + obtenerTotal() }}
-      </button>
+      <div class="metodo"><h2>Tarjeta</h2><label>Nombre del titular<input type="text" autocomplete="off" placeholder="Nombre y apellido" /></label><label>Número de tarjeta<input type="text" autocomplete="off" inputmode="numeric" placeholder="0000 0000 0000 0000" /></label><div class="fila-pago"><label>Vencimiento<input type="text" autocomplete="off" inputmode="numeric" placeholder="MM/AA" /></label><label>CVV<input type="password" autocomplete="off" inputmode="numeric" placeholder="123" /></label></div></div>
+      <div class="cupon"><h2>¿Tenés un cupón?</h2><div><input [value]="codigoCupon()" (input)="codigoCupon.set($any($event.target).value)" placeholder="PRIMERA20" /><button type="button" (click)="aplicarCupon()" [disabled]="aplicandoCupon()">Aplicar</button></div>@if (compra.cupon()) {<small>✓ {{ compra.cupon()!.codigo }} · {{ compra.cupon()!.porcentaje }}% de descuento</small>}</div>
+      <div class="total"><span>Subtotal</span><strong>${{ obtenerSubtotal() }}</strong>@if (compra.descuento() > 0) {<span>Descuento: -${{ compra.descuento() }}</span>}<span>Total</span><strong>${{ obtenerTotal() }}</strong></div>
+      @if (error()) {<p class="error">{{ error() }}</p>}
+      <button type="button" class="boton pagar" [disabled]="procesando()" (click)="pagar()">{{ procesando() ? 'Procesando...' : 'Pagar $' + obtenerTotal() }}</button>
     </div>
   }
 </section>

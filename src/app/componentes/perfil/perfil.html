@@ -233,6 +233,72 @@
     </section>
   </div>
 
+  <section class="tarjeta fidelizacion">
+    <div class="cabecera-tarjeta fidelizacion-cabecera">
+      <div>
+        <span>Fidelización</span>
+        <h2>Canjeá tus puntos</h2>
+      </div>
+      <strong>{{ auth.perfil()?.puntos ?? 0 }} puntos</strong>
+    </div>
+
+    @if (mensajeCanje()) {
+      <div class="mensaje">✓ {{ mensajeCanje() }}</div>
+    }
+
+    <div class="lista-compras">
+      @for (recompensa of recompensas(); track recompensa.id) {
+        <article class="compra recompensa-item">
+          <div>
+            <strong>{{ recompensa.nombre }}</strong>
+            <p>{{ recompensa.costo_puntos }} puntos</p>
+          </div>
+          <button
+            type="button"
+            (click)="canjear(recompensa)"
+            [disabled]="(auth.perfil()?.puntos ?? 0) < recompensa.costo_puntos"
+          >
+            Canjear
+          </button>
+        </article>
+      }
+    </div>
+
+    @if (canjes().length) {
+      <div class="historial-canjes">
+        <div class="historial-canjes-cabecera">
+          <div>
+            <span>Actividad</span>
+            <h3>Últimos canjes</h3>
+          </div>
+          <small>{{ canjes().length }} canje{{ canjes().length === 1 ? '' : 's' }}</small>
+        </div>
+
+        <div class="lista-canjes">
+          @for (canje of canjes().slice(0, 5); track canje.id) {
+            <article class="canje-card">
+              <div class="canje-icono" aria-hidden="true">✓</div>
+
+              <div class="canje-info">
+                <strong>{{ canje.nombre }}</strong>
+                <span>{{ canje.puntos }} puntos utilizados</span>
+                <small>{{ formatearFechaHora(canje.fecha_creacion) }}</small>
+              </div>
+
+              <div class="canje-codigo">
+                <span>Código</span>
+                <strong>{{ canje.codigo }}</strong>
+                <button type="button" (click)="copiarCodigo(canje.codigo)">
+                  Copiar
+                </button>
+              </div>
+            </article>
+          }
+        </div>
+      </div>
+    }
+  </section>
+
   <section class="tarjeta historial">
     <div class="cabecera-tarjeta">
       <div>

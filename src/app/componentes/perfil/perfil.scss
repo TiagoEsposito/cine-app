@@ -23,3 +23,34 @@ dl { display:grid; grid-template-columns:1fr 1fr; margin:0; }.datos-cuenta dl di
 .salir:hover { background:#fff0ee; }
 
 .credito-compra{color:#48664e!important;font-weight:800}
+
+
+/* Historial de canjes */
+.fidelizacion { padding: 1.25rem; margin-bottom: 24px; }
+.fidelizacion-cabecera { margin-bottom: 1rem; }
+.fidelizacion-cabecera > strong { color: #9b690e; font-size: .95rem; }
+.recompensa-item { align-items: center; }
+.recompensa-item button { border: 1px solid #d8d2c7; background: #eeebe3; color: #3d3932; border-radius: 8px; padding: .6rem .8rem; font-size: .72rem; font-weight: 800; cursor: pointer; }
+.recompensa-item button:hover:not(:disabled) { background: #e7a93b; color: #17120a; border-color: #e7a93b; }
+.recompensa-item button:disabled { opacity: .45; cursor: not-allowed; }
+.historial-canjes { margin-top: 1.25rem; padding-top: 1.15rem; border-top: 1px solid #e6e1d8; }
+.historial-canjes-cabecera { display:flex; justify-content:space-between; align-items:flex-end; gap:1rem; margin-bottom:.7rem; }
+.historial-canjes-cabecera span { color:#b07816; font-size:.68rem; font-weight:850; letter-spacing:.14em; text-transform:uppercase; }
+.historial-canjes-cabecera h3 { margin:.2rem 0 0; color:#25231e; font-size:1.05rem; letter-spacing:-.025em; }
+.historial-canjes-cabecera small { color:#99948a; font-size:.68rem; }
+.lista-canjes { display:flex; flex-direction:column; gap:.55rem; }
+.canje-card { display:grid; grid-template-columns:auto minmax(0,1fr) auto; align-items:center; gap:.85rem; padding:.85rem; border:1px solid #e2ded6; border-radius:12px; background:#faf8f3; }
+.canje-icono { width:34px; height:34px; display:grid; place-items:center; border-radius:10px; background:#edf5ee; color:#48664e; font-weight:900; }
+.canje-info { min-width:0; display:flex; flex-direction:column; gap:.16rem; }
+.canje-info strong { color:#292720; font-size:.82rem; }
+.canje-info span,.canje-info small { color:#7e7970; font-size:.68rem; }
+.canje-codigo { display:flex; align-items:center; gap:.5rem; }
+.canje-codigo > span { color:#99948a; font-size:.62rem; text-transform:uppercase; letter-spacing:.08em; }
+.canje-codigo > strong { padding:.4rem .55rem; border-radius:7px; background:#181713; color:#f2c66f; font-size:.72rem; letter-spacing:.08em; }
+.canje-codigo button { border:1px solid #d8d2c7; background:#fffdf9; color:#5d5952; border-radius:7px; padding:.38rem .55rem; font-size:.64rem; font-weight:800; cursor:pointer; }
+.canje-codigo button:hover { background:#e7a93b; color:#17120a; border-color:#e7a93b; }
+@media (max-width:600px) {
+  .fidelizacion { padding: 1rem; }
+  .canje-card { grid-template-columns:auto 1fr; }
+  .canje-codigo { grid-column:1/-1; padding-left:42px; flex-wrap:wrap; }
+}

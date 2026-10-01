@@ -4,6 +4,8 @@ import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../servicios/auth.service';
 import { ComprasService } from '../../servicios/compras.service';
 import { CompraHistorial } from '../../models/compra.model';
+import { BeneficiosService } from '../../servicios/beneficios.service';
+import { Recompensa } from '../../models/beneficios.model';
 
 @Component({
   selector: 'app-perfil',
@@ -15,6 +17,7 @@ export class PerfilComponent implements OnInit {
   readonly auth = inject(AuthService);
   private readonly router = inject(Router);
   private readonly comprasService = inject(ComprasService);
+  private readonly beneficios = inject(BeneficiosService);
 
   readonly compras = signal<CompraHistorial[]>([]);
   readonly cargando = signal(true);
@@ -23,6 +26,9 @@ export class PerfilComponent implements OnInit {
   readonly error = signal<string | null>(null);
   readonly mensaje = signal<string | null>(null);
   readonly errorCancelacion = signal<string | null>(null);
+  readonly recompensas = signal<Recompensa[]>([]);
+  readonly canjes = signal<any[]>([]);
+  readonly mensajeCanje = signal<string | null>(null);
 
   readonly nombre = signal('');
   readonly apellido = signal('');
@@ -46,7 +52,8 @@ export class PerfilComponent implements OnInit {
     }
 
     try {
-      this.compras.set(await this.comprasService.obtenerHistorial(usuarioId));
+      const [historial, recompensas, canjes] = await Promise.all([this.comprasService.obtenerHistorial(usuarioId), this.beneficios.obtenerRecompensas(), this.beneficios.obtenerCanjes(usuarioId)]);
+      this.compras.set(historial); this.recompensas.set(recompensas); this.canjes.set(canjes);
     } catch (error: unknown) {
       this.error.set(error instanceof Error ? error.message : 'No se pudo cargar tu historial.');
     } finally {
@@ -129,6 +136,28 @@ export class PerfilComponent implements OnInit {
     }
   }
 
+  async canjear(recompensa: Recompensa): Promise<void> {
+    this.mensajeCanje.set(null);
+    try {
+      const codigo = await this.beneficios.canjearRecompensa(recompensa.id);
+      this.mensajeCanje.set(`Canje realizado. Código: ${codigo}`);
+      await this.auth.recargarPerfil();
+      const usuarioId = this.auth.perfil()?.id;
+      if (usuarioId) this.canjes.set(await this.beneficios.obtenerCanjes(usuarioId));
+    } catch (e) { this.mensajeCanje.set(e instanceof Error ? e.message : 'No se pudo realizar el canje.'); }
+  }
+
+  async copiarCodigo(codigo: string): Promise<void> {
+    if (!codigo || codigo === '—') return;
+
+    try {
+      await navigator.clipboard.writeText(codigo);
+      this.mensajeCanje.set(`Código ${codigo} copiado.`);
+    } catch {
+      this.mensajeCanje.set(`Código: ${codigo}`);
+    }
+  }
+
   async cerrarSesion(): Promise<void> {
     await this.auth.cerrarSesion();
     await this.router.navigate(['/cartelera']);
@@ -137,6 +166,13 @@ export class PerfilComponent implements OnInit {
   formatearFecha(fecha: string | null | undefined): string {
     if (!fecha) return '—';
     return new Intl.DateTimeFormat('es-AR', { dateStyle: 'medium' }).format(new Date(`${fecha}T12:00:00`));
+  }
+
+  formatearFechaHora(fecha: string): string {
+    return new Intl.DateTimeFormat('es-AR', {
+      dateStyle: 'medium',
+      timeStyle: 'short',
+    }).format(new Date(fecha));
   }
 
   formatearDinero(valor: number): string {

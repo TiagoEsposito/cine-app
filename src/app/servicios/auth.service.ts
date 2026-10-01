@@ -73,14 +73,17 @@ export class AuthService {
       return 'No hay una sesión activa.';
     }
 
-    const { error } = await this.supabase.cliente.rpc('actualizar_perfil', {
-      p_nombre: datos.nombre,
-      p_apellido: datos.apellido,
-      p_fecha_nacimiento: datos.fecha_nacimiento,
-      p_tipo_sangre: datos.tipo_sangre,
-      p_color_ojos: datos.color_ojos,
-      p_dias_vacaciones: datos.dias_vacaciones,
-    });
+    const { error } = await this.supabase.cliente
+      .from('perfiles')
+      .update({
+        nombre: datos.nombre,
+        apellido: datos.apellido,
+        fecha_nacimiento: datos.fecha_nacimiento,
+        tipo_sangre: datos.tipo_sangre,
+        color_ojos: datos.color_ojos,
+        dias_vacaciones: datos.dias_vacaciones,
+      })
+      .eq('id', usuarioId);
 
     if (error) {
       return error.message;
